@@ -9,6 +9,17 @@ function App() {
 
   return (
     <>
+      <div className="min-h-screen bg-gray-100 p-8">
+        <div className="max-w-md mx-auto bg-white rounded-xl shadow-md p-6">
+          <h1 className="text-2xl font-bold text-blue-600">
+            Medication Tracker
+          </h1>
+          <p className="text-gray-500 mt-2">
+            Tailwind is now working if this text is gray and the title is blue!
+          </p>
+        </div>
+      </div>
+
       <section id="center">
         <div className="hero">
           <img src={heroImg} className="base" width="170" height="179" alt="" />
