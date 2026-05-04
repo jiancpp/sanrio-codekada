@@ -7,7 +7,11 @@ const UserSchema = new mongoose.Schema({
     bloodType: String,
     allergies: [String],
     medicalConditions: [String],
-    maintenanceMeds: [{name: String, frequency: String}]
+    maintenanceMeds: [{name: String, frequency: String}],
+    currentStreak: Number,
+    lastLogDate: Date,
+
+    labTests: [mongoose.Schema.Types.ObjectId]
 });
 
 module.exports = mongoose.model('User', UserSchema);
