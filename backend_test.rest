@@ -1,0 +1,20 @@
+# Note to kyle: Install Rest Client Extension
+
+### Test Register User
+POST http://localhost:5001/api/users/register
+Content-Type: application/json
+
+{
+    "name": "Lola Tessie",
+    "birthdate": "1969-05-04T12:00:00Z",
+    "familyCode": "TALA2026",
+    "bloodType": "B+",
+    "allergies": ["Peanuts"],
+    "medicalConditions": ["None"],
+    "maintenanceMeds": [
+        {"name": "Metformin", "time": "8:00 AM"}
+    ]
+}
+
+### Test Get Family Members
+GET http://localhost:5001/api/users/family/TALA2026
