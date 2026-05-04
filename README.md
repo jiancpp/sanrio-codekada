@@ -11,6 +11,24 @@ Inside the repository:
 ```
 npm install
 ```
+## Run the App Locally for Testing and Debugging
+
+Start the development server:
+
+```
+cd server
+node server.js
+```
+On a different terminal, run the following command:
+```
+npm run dev
+```
+
+The application will run at:
+
+```
+http://localhost:5173
+```
 
 ---
 
