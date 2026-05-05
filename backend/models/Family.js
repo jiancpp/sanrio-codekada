@@ -12,4 +12,6 @@ const FamilySchema = new mongoose.Schema({
     }]
 });
 
-modules.exports = mongoose.model("Family", FamilySchema);
+FamilySchema.index({ familyCode: 1 }, { unique: true })
+
+module.exports = mongoose.model("Family", FamilySchema);

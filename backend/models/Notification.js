@@ -12,3 +12,4 @@ const NotificationSchema = new mongoose.Schema({
         expires: 2592000 // 30 days in seconds 
     } 
 })
+
