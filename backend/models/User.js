@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const UserSchema = new mongoose.Schema({
     name: { type: String, required: true, trim: true},
@@ -40,5 +41,20 @@ UserSchema.index(
     { name: 1, familyCode: 1 }, 
     { unique: true, partialFilterExpression: { familyCode: { $type: "string" } } }
 );
+
+// Hash password before saving
+UserSchema.pre('save', async function () {
+    if (!this.isModified('password')) return;
+    
+    // Generate salt and hash
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    return;
+});
+
+// Method to compare password for login
+UserSchema.methods.comparePassword = async function (enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
+};
 
 module.exports = mongoose.model('User', UserSchema);

@@ -6,8 +6,9 @@ Content-Type: application/json
 
 {
     "name": "Lola Tessie",
-    "birthdate": "1969-05-04T12:00:00Z",
+    "password": "SinigangNaBaboy",
     "familyCode": "TALA2026",
+    "birthdate": "1969-05-04T12:00:00Z",
     "bloodType": "B+",
     "allergies": ["Peanuts"],
     "medicalConditions": [],
@@ -22,8 +23,9 @@ Content-Type: application/json
 
 {
     "name": "Papa",
-    "birthdate": "1989-05-04T12:00:00Z",
+    "password": "SinigangNaBaboy",
     "familyCode": "TALA2026",
+    "birthdate": "1989-05-04T12:00:00Z",
     "bloodType": "B+",
     "allergies": ["Peanuts"],
     "medicalConditions": ["Diabetes"],
@@ -38,5 +40,23 @@ Content-Type: application/json
     "lastLogDate": "2026-05-04T12:00:00Z"
 }
 
+### Test Login User
+POST http://localhost:5001/api/users/login
+Content-Type: application/json
+
+{
+    "name": "Lola",
+    "password": "SinigangNaBaboy",
+    "familyCode": "TALA2026"
+}
+
 ### Test Get Family Members
 GET http://localhost:5001/api/users/family/TALA2026
+
+### Test Login User
+PUT http://localhost:5001/api/users/profile/edit/69f98949f37114153e6d90d8
+Content-Type: application/json
+
+{
+    "allergies": ["Pollen"]
+}
