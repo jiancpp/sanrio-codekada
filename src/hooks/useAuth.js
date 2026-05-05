@@ -5,7 +5,7 @@ export const useAuth = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const login = async (name, familyCode, password, rememberMe) => {
+    const login = async (email, password, rememberMe) => {
         setIsLoading(true);
         setError(null);
 
@@ -13,7 +13,7 @@ export const useAuth = () => {
             const response = await fetch(`${BASE_URL}/users/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, familyCode, password })
+                body: JSON.stringify({ email, password })
             });
 
             const data = await response.json();

@@ -19,6 +19,30 @@ exports.registerUser = async(req, res) => {
 }
 
 /**
+ * GET - Get one family member
+ * 
+ * @param {*} req 
+ * @param {*} res
+ */
+exports.getMemberInfo = async(req, res) => {
+    try {
+        const { id } = req.params
+        const member = await User.findById(id);
+
+        if (!member) {
+            return res.status(403).json({ message: "User not found "})
+        }
+        if (req.user.familyCode !== member.familyCode) {
+            return res.status(403).json({ message: "Not authorized to see info"})
+        }
+
+        res.json(member);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
+/**
  * GET - Get all family members
  * 
  * @param {*} req 
@@ -43,8 +67,11 @@ exports.getFamily = async(req, res) => {
  */
 exports.loginUser = async(req, res) => {
     try {
-        const { name, familyCode, password } = req.body;
-        const user = await User.findOne({ name, familyCode });
+        // const { name, familyCode, password } = req.body;
+        // const user = await User.findOne({ name, familyCode });
+
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });

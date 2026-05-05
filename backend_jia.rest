@@ -5,6 +5,7 @@ POST http://localhost:5001/api/users/register
 Content-Type: application/json
 
 {
+    "email": "jiannaclarisse.tm@gmail.com",
     "name": "Lola Tessie",
     "password": "SinigangNaBaboy",
     "familyCode": "TALA2026",
@@ -22,6 +23,7 @@ POST http://localhost:5001/api/users/register
 Content-Type: application/json
 
 {
+    "email": "dobadoba911@gmail.com",
     "name": "Papa",
     "password": "SinigangNaBaboy",
     "familyCode": "TALA2026",
@@ -48,16 +50,20 @@ POST http://localhost:5001/api/users/login
 Content-Type: application/json
 
 {
-    "name": "Lola Tessie",
-    "password": "SinigangNaBaboy",
-    "familyCode": "TALA2026"
+    "email": "dobadoba911@gmail.com",
+    "password": "SinigangNaBaboy"
 }
 
 ### Test Get Family Members
+GET http://localhost:5001/api/users/member/69fa0a3a382914c64efbdbbb
+Authorization: Bearer {{token}}
+
+### Test Get Family Members
 GET http://localhost:5001/api/users/family/TALA2026
+Authorization: Bearer {{token}}
 
 ### Test Update Info
-PUT http://localhost:5001/api/users/profile/edit-info/69f9c807249de3db4766d276
+PUT http://localhost:5001/api/users/profile/edit-info/69fa0a3a382914c64efbdbbb
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -72,7 +78,7 @@ Content-Type: application/json
 
 {
     "familyCode": "TALA2026",
-    "member": "69f9c807249de3db4766d276",
+    "member": "69fa0a3f382914c64efbdbbc",
     "message": "Testing"
 }
 
@@ -87,5 +93,5 @@ Content-Type: application/json
 }
 
 ### Test Remove Notification
-DELETE  http://localhost:5001/api/notifications/delete/69f9faa419c41dc3acb83d8c
+DELETE  http://localhost:5001/api/notifications/delete/69fa19354c422e9db73c6bd1
 Authorization: Bearer {{token}}

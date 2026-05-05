@@ -1,12 +1,21 @@
 const Notification = require('../models/Notification')
 const Family = require('../models/Family');
-const { findOne } = require('../models/User');
 
 exports.notifyMember = async(req, res) => {
     try {
-        const notif = new Notification(req.body);
+        const { member, message, familyCode } = req.body;
+        const notif = new Notification({ 
+            member, 
+            familyCode, 
+            message 
+        });
         await notif.save();
-        res.status(201).json(notif)
+
+        // Emit the event to that specific user's room
+        const io = req.app.get('io');
+        io.to(member).emit('new_notification', notif);
+
+        res.status(201).json(notif);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -23,6 +32,11 @@ exports.notifyFamily = async(req, res) => {
 
         const savePromises = family.members.map(member => {
             const notif = new Notification({ familyCode, member, message });
+
+            // Emit the event to that specific user's room
+            const io = req.app.get('io');
+            io.to(member).emit('new_notification', notif);
+
             return notif.save(); 
         });
         

@@ -2,12 +2,10 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const UserSchema = new mongoose.Schema({
+    email: { type: String, required: true, unique: true, trim: true, lowercase: true},
     name: { type: String, required: true, trim: true},
     password: { type: String, required: true },
-    familyCode: { type: String, required: true, index: true, trim: true, uppercase: true}, 
-    // During register:
-    // user will set a name and password
-    // before creating user document, user must choose is they will create or join a family
+    familyCode: { type: String, index: true, trim: true, uppercase: true}, 
 
     role: {
         type: String,
@@ -28,6 +26,7 @@ const UserSchema = new mongoose.Schema({
     }],
     currentStreak: { type: Number, default: 0 },
     lastLogDate: { type: Date, default: null },
+    finishedAccountSetup: { type: Boolean, default: false }
 });
 
 // Partial Index: Only enforces unique names WITHIN the same family

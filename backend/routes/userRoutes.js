@@ -7,6 +7,7 @@ const { protect, authorize } = require('../middleware/auth');  // protect routes
 router.post('/register', userController.registerUser);
 router.post('/login', userController.loginUser)
 router.put('/profile/edit-info/:id', protect, userController.editMemberInfo)
-router.get('/family/:code', userController.getFamily);
+router.get('/member/:id', protect, userController.getMemberInfo);
+router.get('/family/:code', protect, userController.getFamily);
 
 module.exports = router;
