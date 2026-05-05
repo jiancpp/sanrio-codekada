@@ -46,6 +46,8 @@ io.on('connection', (socket) => {
 // Use Routes
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
+app.use('/api/daily-log', require('./routes/dailyLogRoutes'));
+app.use('/api/family', require('./routes/familyRoutes'));
 
 // Start scheduler
 initCronJobs();

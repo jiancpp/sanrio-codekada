@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PeopleFill, GlobeAmericas, HeartFill, ShieldLockFill, EyeFill, EyeSlashFill, PersonFill } from 'react-bootstrap-icons';
 
-const Register = () => {
+const Login = () => {
   const [formData, setFormData] = useState({
     name: '',
     password: '',
@@ -82,9 +82,9 @@ const Register = () => {
 
           <div className="mb-8">
             <h2 className="font-display font-black text-[1.875rem] text-midnight tracking-tight mb-0">
-              Create your account
+              Log back in to your account
             </h2>
-            <p className="text-mauve text-[0.9375rem]">Get started in less than a minute</p>
+            <p className="text-mauve text-[0.9375rem]">Reconnect with your family</p>
           </div>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
@@ -116,7 +116,7 @@ const Register = () => {
                   type={showPassword ? 'text' : 'password'}
                   id="password"
                   name="password"
-                  placeholder="Create a strong password"
+                  placeholder="Enter your password"
                   value={formData.password}
                   onChange={handleChange}
                   required
@@ -130,32 +130,6 @@ const Register = () => {
                   {showPassword ? <EyeSlashFill/> : <EyeFill/>}
                 </button>
               </div>
-              <span className="text-xs text-mauve mt-0.5">At least 8 characters</span>
-            </div>
-
-            {/* Confirm Password */}
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="confirmPassword" className="font-semibold text-sm text-midnight">Confirm Password</label>
-              <div className="relative flex items-center">
-                <span className="absolute left-4 text-mauve pointer-events-none"><ShieldLockFill/></span>
-                <input
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  placeholder="Re-enter your password"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                  className="w-full pl-11 pr-12 py-3.5 border-2 border-olive-light rounded-[0.875rem] text-[0.9375rem] text-midnight bg-white placeholder-[#b0b0b0] transition-all focus:outline-none focus:border-olive focus:shadow-[0_0_0_3px_rgba(115,138,119,0.15)]"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-4 bg-transparent border-none cursor-pointer text-base opacity-60 hover:opacity-100 transition-opacity p-0"
-                >
-                  {showConfirmPassword ? <EyeSlashFill/> : <EyeFill/>}
-                </button>
-              </div>
             </div>
 
             {/* Submit */}
@@ -163,14 +137,14 @@ const Register = () => {
               type="submit"
               className="w-full py-4 bg-midnight text-egg rounded-full font-bold text-[0.9375rem] border-none cursor-pointer transition-all mt-1 hover:bg-mauve hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(26,26,46,0.25)]"
             >
-              Continue
+              Login
             </button>
           </form>
 
           {/* Sign in link */}
           <p className="text-center text-sm text-mauve mt-6">
-            Already have an account?{' '}
-            <a href="/login" className="text-olive font-semibold no-underline hover:underline">Sign in</a>
+            Don't have an account?{' '}
+            <a href="/login" className="text-olive font-semibold no-underline hover:underline">Register here</a>
           </p>
 
           {/* Divider */}
@@ -206,4 +180,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;

@@ -1,17 +1,22 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
-
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
+import Register from './pages/Register';
+import Login from './pages/Login';
+import FamilySetup from './pages/FamilySetup';
+import FamilyDashboard from './pages/FamilyDashboard';
 
 function App() {
   return (
-    <>
-      <LandingPage />
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/familysetup" element={<FamilySetup />} />
+        <Route path="/dashboard" element={<FamilyDashboard />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
