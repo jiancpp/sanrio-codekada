@@ -95,3 +95,27 @@ Content-Type: application/json
 ### Test Remove Notification
 DELETE  http://localhost:5001/api/notifications/delete/69fa19354c422e9db73c6bd1
 Authorization: Bearer {{token}}
+
+
+### Create a Lab Test
+POST http://localhost:5001/api/lab-tests/add
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "familyCode": "TALA2026",
+    "member": "69fa0a3f382914c64efbdbbc",
+    "testName": "Blood Sugar Level",
+    "testDate": "2026-05-06T08:00:00Z",
+    "notes": "Fast for 8 hours before test.",
+    "attachments": ["https://cloudinary.com/result123.pdf"]
+}
+
+### Get Member Tests
+GET http://localhost:5001/api/lab-tests/member/TALA2026/69fa0a3f382914c64efbdbbc
+Authorization: Bearer {{token}}
+
+### Get Family Tests
+GET http://localhost:5001/api/lab-tests/family/TALA2026
+Authorization: Bearer {{token}}
+

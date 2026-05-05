@@ -24,6 +24,13 @@ const UserSchema = new mongoose.Schema({
         days: { type: [String], enum: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']},
         time: [String]
     }],
+
+    // Med Archive
+    labTests: {
+        type: [mongoose.Schema.Types.ObjectId],
+        default: []
+    },
+
     currentStreak: { type: Number, default: 0 },
     lastLogDate: { type: Date, default: null },
     finishedAccountSetup: { type: Boolean, default: false }

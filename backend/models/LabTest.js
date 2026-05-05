@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-// TODO: Kyle
 const LabTestSchema = new mongoose.Schema({
     familyCode: {
         type: String,
