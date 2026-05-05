@@ -1,9 +1,14 @@
 const mongoose = require('mongoose');
 
 const NotificationSchema = new mongoose.Schema({
-    family: String,
+    familyCode: String,
+    member: String,
     message: String,
 
     // Auto-deletes after 24 hours  => change to two weeks
-    createdAt: { type: Date, default: Date.now, expires: 86400 } 
+    createdAt: { 
+        type: Date, 
+        default: Date.now, 
+        expires: 2592000 // 30 days in seconds 
+    } 
 })

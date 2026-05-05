@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
+// TODO: Kyle
 const DailyLogSchema = new mongoose.Schema({
-    family: {
+    familyCode: {
         type: String, 
         required: true
     },
@@ -9,13 +10,14 @@ const DailyLogSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         required: true
     },
-    bp: {
-        systolic: Number,
-        diastolic: Number
-    },
+    // bp: {
+    //     systolic: Number,  numerator
+    //     diastolic: Number
+    // },
+    bp: String,
     heartRate: Number,
     bloodSugar: Number,
-    // waterIntake: Number,
+    waterIntake: Number,
     notes: String
 }, {timestamps: true})
 

@@ -10,10 +10,32 @@ Content-Type: application/json
     "familyCode": "TALA2026",
     "bloodType": "B+",
     "allergies": ["Peanuts"],
-    "medicalConditions": ["None"],
+    "medicalConditions": [],
+    "maintenanceMeds": [],
+    "currentStreak": 0,
+    "lastLogDate": "2026-05-04T12:00:00Z"
+}
+
+### Test Register User
+POST http://localhost:5001/api/users/register
+Content-Type: application/json
+
+{
+    "name": "Papa",
+    "birthdate": "1989-05-04T12:00:00Z",
+    "familyCode": "TALA2026",
+    "bloodType": "B+",
+    "allergies": ["Peanuts"],
+    "medicalConditions": ["Diabetes"],
     "maintenanceMeds": [
-        {"name": "Metformin", "time": "8:00 AM"}
-    ]
+        {
+            "name": "Metformin", 
+            "days": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
+            "time": []
+        }
+    ],
+    "currentStreak": 0,
+    "lastLogDate": "2026-05-04T12:00:00Z"
 }
 
 ### Test Get Family Members
