@@ -1,4 +1,4 @@
-# Note to kyle: Install Rest Client Extension
+@token = {{login.response.body.token}}
 
 ### Test Register User
 POST http://localhost:5001/api/users/register
@@ -25,6 +25,7 @@ Content-Type: application/json
     "name": "Papa",
     "password": "SinigangNaBaboy",
     "familyCode": "TALA2026",
+    "role": "Manager",
     "birthdate": "1989-05-04T12:00:00Z",
     "bloodType": "B+",
     "allergies": ["Peanuts"],
@@ -40,12 +41,14 @@ Content-Type: application/json
     "lastLogDate": "2026-05-04T12:00:00Z"
 }
 
+
 ### Test Login User
+# @name login
 POST http://localhost:5001/api/users/login
 Content-Type: application/json
 
 {
-    "name": "Lola",
+    "name": "Papa Jason",
     "password": "SinigangNaBaboy",
     "familyCode": "TALA2026"
 }
@@ -53,10 +56,11 @@ Content-Type: application/json
 ### Test Get Family Members
 GET http://localhost:5001/api/users/family/TALA2026
 
-### Test Login User
-PUT http://localhost:5001/api/users/profile/edit/69f98949f37114153e6d90d8
+### Test Update Info
+PUT http://localhost:5001/api/users/profile/edit-info/69f9c807249de3db4766d276
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-    "allergies": ["Pollen"]
+    "name": "Lola Tessie"
 }

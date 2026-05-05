@@ -75,12 +75,30 @@ exports.loginUser = async(req, res) => {
 exports.editMemberInfo = async(req, res) => {
     try {
         const user = await User.findById(req.params.id);
-        const { birthdate, bloodType, allergies, medicalConditions } = req.body;
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
 
+        const isSelf = req.user._id.toString() === user._id.toString();
+        const isManager = req.user.role === 'Manager'
+
+        // Authorization Check
+        if (!isSelf && !isManager) {
+            return res.status(403).json({ message: "Not authorized to edit other family members." });
+        }
+
+        if (isManager && req.user.familyCode !== user.familyCode) {
+            return res.status(403).json({ message: "You can only edit members of your own family." });
+        }
+
+        const { name, birthdate, bloodType, allergies, medicalConditions, maintenanceMeds } = req.body;
+
+        user.name = name || user.name;
         user.birthdate = birthdate || user.birthdate;
         user.bloodType = bloodType || user.bloodType;
         user.allergies = allergies || user.allergies;
         user.medicalConditions = medicalConditions || user.medicalConditions;
+        user.maintenanceMeds = maintenanceMeds || user.maintenanceMeds;
 
         await user.save();
         res.status(200).json(user);
@@ -90,7 +108,7 @@ exports.editMemberInfo = async(req, res) => {
     }
 }
 
-exports.functionTemplate = async(req, res) => {
+exports.template = async(req, res) => {
     try {
 
     } catch (err) {

@@ -28,15 +28,10 @@ const UserSchema = new mongoose.Schema({
     }],
     currentStreak: { type: Number, default: 0 },
     lastLogDate: { type: Date, default: null },
-
-    // Track onboarding progress
-    hasCompletedMedical: { type: Boolean, default: false }
 });
 
 // Partial Index: Only enforces unique names WITHIN the same family
 // This allows many "New Users" with the same name to exist BEFORE they join families
-
-// do i still need this
 UserSchema.index(
     { name: 1, familyCode: 1 }, 
     { unique: true, partialFilterExpression: { familyCode: { $type: "string" } } }
