@@ -37,7 +37,10 @@ const LandingPage = () => {
             </p>
 
             <div className="fade-up d3 flex flex-wrap justify-center lg:justify-start gap-4">
-              <button className="bg-midnight text-egg px-8 py-4 rounded-full font-bold shadow-lg hover:-translate-y-1 active:scale-95 transition-all">
+              <button 
+                onClick={() => navigate('/register')}
+                className="bg-midnight text-egg px-8 py-4 rounded-full font-bold shadow-lg hover:-translate-y-1 active:scale-95 transition-all"
+              >
                 Get Started
               </button>
               <button 
