@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { PeopleFill, GlobeAmericas, HeartFill } from 'react-bootstrap-icons';
-import './Register.css';
+import { PeopleFill, GlobeAmericas, HeartFill, ShieldLockFill, EyeFill, EyeSlashFill, PersonFill } from 'react-bootstrap-icons';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -17,88 +16,102 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle registration logic
     console.log(formData);
   };
 
   return (
-    <div className="register-container">
-      {/* Left Column - Design/Branding */}
-      <div className="register-brand">
-        <div className="brand-content">
-          <a href="/" className="brand-logo">
-            <span className="brand-name">TalaCare</span>
-            <span className="brand-dot"></span>
+    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 font-body">
+
+      {/* ── LEFT COLUMN: Branding ── */}
+      <div className="hidden lg:flex relative bg-midnight items-center justify-center p-12 overflow-hidden">
+
+        {/* Decorative circles */}
+        <div className="absolute w-[400px] h-[400px] rounded-full bg-olive opacity-15 -top-36 -right-24 pointer-events-none" />
+        <div className="absolute w-[250px] h-[250px] rounded-full bg-coral opacity-15 -bottom-20 -left-14 pointer-events-none" />
+        <div className="absolute w-[150px] h-[150px] rounded-full bg-jasmine opacity-15 bottom-[20%] right-[10%] pointer-events-none" />
+
+        <div className="relative z-10 max-w-[480px] w-full">
+          {/* Logo */}
+          <a href="/" className="inline-flex items-center gap-2 mb-12 no-underline">
+            <span className="font-display font-black text-[1.75rem] text-egg tracking-tight">TalaCare</span>
+            <span className="w-2 h-2 rounded-full bg-coral" />
           </a>
-          
-          <div className="brand-message">
-            <h1>Start caring for your family today.</h1>
-            <p>Join thousands of Filipino families staying connected through health — no matter the distance.</p>
+
+          {/* Message */}
+          <div className="mb-12">
+            <h1 className="font-display font-black text-[2.75rem] text-egg leading-[1.15] tracking-tight mb-4">
+              Start caring for your family today.
+            </h1>
+            <p className="text-sage text-lg leading-relaxed max-w-[380px]">
+              Join thousands of Filipino families staying connected through health — no matter the distance.
+            </p>
           </div>
 
-          {/* Decorative floating elements */}
-          <div className="floating-elements">
-            <div className="float-card float-card-1">
-              <span className="float-icon"><PeopleFill/></span>
-              <div className="float-text">
-                <span className="float-title">Family First</span>
-                <span className="float-sub">Health sync for everyone</span>
+          {/* Floating feature cards */}
+          <div className="flex flex-col gap-3.5">
+            {[
+              { icon: <PeopleFill/>, title: 'Family First', sub: 'Health sync for everyone', delay: '0s' },
+              { icon: <GlobeAmericas/>, title: 'Works Anywhere', sub: 'Dubai, Singapore, Canada...', delay: '2s' },
+              { icon: <HeartFill/>, title: '100% Free', sub: 'No hidden fees, ever', delay: '4s' },
+            ].map(({ icon, title, sub, delay }) => (
+              <div
+                key={title}
+                className="flex items-center gap-3.5 bg-white/[0.08] backdrop-blur border border-white/10 px-5 py-4 rounded-2xl"
+                style={{ animation: `float2 6s ease-in-out ${delay} infinite` }}
+              >
+                <span className="text-2xl">{icon}</span>
+                <div className="flex flex-col">
+                  <span className="font-bold text-sm text-egg">{title}</span>
+                  <span className="text-xs text-sage opacity-80">{sub}</span>
+                </div>
               </div>
-            </div>
-            
-            <div className="float-card float-card-2">
-              <span className="float-icon"><GlobeAmericas/></span>
-              <div className="float-text">
-                <span className="float-title">Works Anywhere</span>
-                <span className="float-sub">Dubai, Singapore, Canada...</span>
-              </div>
-            </div>
-            
-            <div className="float-card float-card-3">
-              <span className="float-icon"><HeartFill/></span>
-              <div className="float-text">
-                <span className="float-title">100% Free</span>
-                <span className="float-sub">No hidden fees, ever</span>
-              </div>
-            </div>
+            ))}
           </div>
-
-          {/* Abstract decoration */}
-          <div className="decoration-circle decoration-circle-1"></div>
-          <div className="decoration-circle decoration-circle-2"></div>
-          <div className="decoration-circle decoration-circle-3"></div>
         </div>
       </div>
 
-      {/* Right Column - Registration Form */}
-      <div className="register-form-section">
-        <div className="form-wrapper">
-          <div className="form-header">
-            <h2>Create your account</h2>
-            <p>Get started in less than a minute</p>
+      {/* ── RIGHT COLUMN: Form ── */}
+      <div className="flex items-center justify-center bg-egg px-6 py-12 min-h-screen lg:min-h-0">
+        <div className="w-full max-w-[400px]">
+
+          {/* Mobile logo */}
+          <a href="/" className="lg:hidden inline-flex items-center gap-2 mb-10 no-underline">
+            <span className="font-display font-black text-2xl text-midnight">TalaCare</span>
+            <span className="w-2 h-2 rounded-full bg-coral" />
+          </a>
+
+          <div className="mb-8">
+            <h2 className="font-display font-black text-[1.875rem] text-midnight tracking-tight mb-0">
+              Create your account
+            </h2>
+            <p className="text-mauve text-[0.9375rem]">Get started in less than a minute</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="register-form">
-            <div className="form-group">
-              <label htmlFor="name">Full Name</label>
-              <div className="input-wrapper">
-                <span className="input-icon">👤</span>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+
+            {/* Full Name */}
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="name" className="font-semibold text-sm text-midnight">Full Name</label>
+              <div className="relative flex items-center">
+                <span className="absolute left-4 text-mauve pointer-events-none"><PersonFill/></span>
                 <input
                   type="text"
                   id="name"
                   name="name"
-                  placeholder="Juan dela Cruz"
+                  placeholder="Enter your full name"
                   value={formData.name}
                   onChange={handleChange}
                   required
+                  className="w-full pl-11 pr-4 py-3.5 border-2 border-olive-light rounded-[0.875rem] text-[0.9375rem] text-midnight bg-white placeholder-[#b0b0b0] transition-all focus:outline-none focus:border-olive focus:shadow-[0_0_0_3px_rgba(115,138,119,0.15)]"
                 />
               </div>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <div className="input-wrapper">
-                <span className="input-icon">🔒</span>
+            {/* Password */}
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="password" className="font-semibold text-sm text-midnight">Password</label>
+              <div className="relative flex items-center">
+                <span className="absolute left-4 text-mauve pointer-events-none"><ShieldLockFill/></span>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   id="password"
@@ -107,22 +120,24 @@ const Register = () => {
                   value={formData.password}
                   onChange={handleChange}
                   required
+                  className="w-full pl-11 pr-12 py-3.5 border-2 border-olive-light rounded-[0.875rem] text-[0.9375rem] text-midnight bg-white placeholder-[#b0b0b0] transition-all focus:outline-none focus:border-olive focus:shadow-[0_0_0_3px_rgba(115,138,119,0.15)]"
                 />
                 <button
                   type="button"
-                  className="toggle-password"
                   onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 bg-transparent border-none cursor-pointer text-base opacity-60 hover:opacity-100 transition-opacity p-0"
                 >
-                  {showPassword ? '🙈' : '👁️'}
+                  {showPassword ? <EyeSlashFill/> : <EyeFill/>}
                 </button>
               </div>
-              <span className="input-hint">At least 8 characters</span>
+              <span className="text-xs text-mauve mt-0.5">At least 8 characters</span>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="confirmPassword">Confirm Password</label>
-              <div className="input-wrapper">
-                <span className="input-icon">🔒</span>
+            {/* Confirm Password */}
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="confirmPassword" className="font-semibold text-sm text-midnight">Confirm Password</label>
+              <div className="relative flex items-center">
+                <span className="absolute left-4 text-mauve pointer-events-none"><ShieldLockFill/></span>
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
                   id="confirmPassword"
@@ -131,41 +146,59 @@ const Register = () => {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   required
+                  className="w-full pl-11 pr-12 py-3.5 border-2 border-olive-light rounded-[0.875rem] text-[0.9375rem] text-midnight bg-white placeholder-[#b0b0b0] transition-all focus:outline-none focus:border-olive focus:shadow-[0_0_0_3px_rgba(115,138,119,0.15)]"
                 />
                 <button
                   type="button"
-                  className="toggle-password"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-4 bg-transparent border-none cursor-pointer text-base opacity-60 hover:opacity-100 transition-opacity p-0"
                 >
-                  {showConfirmPassword ? '🙈' : '👁️'}
+                  {showConfirmPassword ? <EyeSlashFill/> : <EyeFill/>}
                 </button>
               </div>
             </div>
 
-            <button type="submit" className="submit-btn">
+            {/* Submit */}
+            <button
+              type="submit"
+              className="w-full py-4 bg-midnight text-egg rounded-full font-bold text-[0.9375rem] border-none cursor-pointer transition-all mt-1 hover:bg-mauve hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(26,26,46,0.25)]"
+            >
               Create Account
             </button>
           </form>
 
-          <div className="form-footer">
-            <p>Already have an account? <a href="/login">Sign in</a></p>
+          {/* Sign in link */}
+          <p className="text-center text-sm text-mauve mt-6">
+            Already have an account?{' '}
+            <a href="/login" className="text-olive font-semibold no-underline hover:underline">Sign in</a>
+          </p>
+
+          {/* Divider */}
+          <div className="flex items-center gap-4 my-6">
+            <div className="flex-1 h-px bg-olive-light" />
+            <span className="text-xs text-mauve uppercase tracking-[0.05em]">or continue with</span>
+            <div className="flex-1 h-px bg-olive-light" />
           </div>
 
-          <div className="form-divider">
-            <span>or continue with</span>
+          {/* Social buttons */}
+          <div className="flex gap-3">
+            {[{ letter: 'G', label: 'Google' }, { letter: 'f', label: 'Facebook' }].map(({ letter, label }) => (
+              <button
+                key={label}
+                type="button"
+                className="flex-1 flex items-center justify-center gap-2 py-3 bg-white border-2 border-olive-light rounded-[0.875rem] font-semibold text-sm text-midnight cursor-pointer transition-all hover:border-olive hover:bg-olive-light"
+              >
+                <span className="font-bold">{letter}</span> {label}
+              </button>
+            ))}
           </div>
 
-          <div className="social-buttons">
-            <button type="button" className="social-btn">
-              <span>G</span> Google
-            </button>
-            <button type="button" className="social-btn">
-              <span>f</span> Facebook
-            </button>
-          </div>
-
-          <p className="terms-text">
-            By creating an account, you agree to our <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>
+          {/* Terms */}
+          <p className="text-center text-xs text-mauve mt-6 leading-relaxed">
+            By creating an account, you agree to our{' '}
+            <a href="/terms" className="text-olive no-underline hover:underline">Terms</a>{' '}
+            and{' '}
+            <a href="/privacy" className="text-olive no-underline hover:underline">Privacy Policy</a>
           </p>
         </div>
       </div>

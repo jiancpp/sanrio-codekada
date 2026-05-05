@@ -5,11 +5,15 @@ const FamilySchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    familyName: {
+        type: String,
+        required: true
+    },
     members: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }]
-});
+}, { timestamps: true });
 
 FamilySchema.index({ familyCode: 1 }, { unique: true })
 

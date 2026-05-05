@@ -1,24 +1,37 @@
 const mongoose = require('mongoose');
 
-// TODO: Kyle
 const DailyLogSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     familyCode: {
         type: String, 
         required: true
     },
-    member: {
-        type: mongoose.Schema.Types.ObjectId, 
-        required: true
+    date: {
+        type: Date,
+        required: true,
+        default: Date.now
     },
-    // bp: {
-    //     systolic: Number,  numerator
-    //     diastolic: Number
-    // },
-    bp: String,
-    heartRate: Number,
-    bloodSugar: Number,
+    vitals: {
+        weight: Number,
+        bloodPressure: String,
+        heartRate: Number,
+        bloodSugarLevel: Number,
+    },
+    medsTaken: [{
+        _id: false,
+        name: String,
+        status: {
+            type: Boolean,
+            default: false
+        }
+    }],
     waterIntake: Number,
-    notes: String
-}, {timestamps: true})
+    notes: String,
+    proofImage: String
+}, {timestamps: true});
 
 module.exports = mongoose.model("DailyLog", DailyLogSchema);
