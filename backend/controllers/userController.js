@@ -35,6 +35,12 @@ exports.getFamily = async(req, res) => {
 
 /************************* Functions ****************************/
 
+/**
+ * Handle user login and token
+ * 
+ * @param {*} req 
+ * @param {*} res  
+ */
 exports.loginUser = async(req, res) => {
     try {
         const { name, familyCode, password } = req.body;

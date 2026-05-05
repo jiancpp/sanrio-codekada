@@ -2,8 +2,15 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
 const protect = async (req, res, next) => {
-    let token;
+    const systemKey = req.headers['x-system-key'];
 
+    // If the request has the secret system key, bypass the JWT check
+    if (systemKey && systemKey === process.env.SYSTEM_SECRET_KEY) {
+        req.user = { role: 'Manager', name: 'System' }; // Mock a manager user
+        return next();
+    }
+
+    let token;
     // Check for token in headers
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         try {

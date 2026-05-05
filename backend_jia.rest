@@ -48,7 +48,7 @@ POST http://localhost:5001/api/users/login
 Content-Type: application/json
 
 {
-    "name": "Papa Jason",
+    "name": "Lola Tessie",
     "password": "SinigangNaBaboy",
     "familyCode": "TALA2026"
 }
@@ -64,3 +64,28 @@ Authorization: Bearer {{token}}
 {
     "name": "Lola Tessie"
 }
+
+### Test Notify Member
+POST http://localhost:5001/api/notifications/notify-member
+x-system-key: your_super_secret_key_here
+Content-Type: application/json
+
+{
+    "familyCode": "TALA2026",
+    "member": "69f9c807249de3db4766d276",
+    "message": "Testing"
+}
+
+### Test Notify Family
+POST  http://localhost:5001/api/notifications/notify-family
+x-system-key: your_super_secret_key_here
+Content-Type: application/json
+
+{
+  "familyCode": "TALA2026",
+  "message": "Time for Lola's 10 PM medicine!"
+}
+
+### Test Remove Notification
+DELETE  http://localhost:5001/api/notifications/delete/69f9faa419c41dc3acb83d8c
+Authorization: Bearer {{token}}
