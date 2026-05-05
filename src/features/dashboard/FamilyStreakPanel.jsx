@@ -1,0 +1,96 @@
+import { Avatar } from "../../components/ui/Avatar";
+
+const STREAK_DAYS = ["M", "T", "W", "T", "F", "S", "S"];
+const FAMILY_STREAK_COUNT = 7;
+
+export const FamilyStreakPanel = ({ members }) => {
+  const today = new Date().getDay(); // 0 = Sun
+  const dayIdx = today === 0 ? 6 : today - 1; // Adjust to Mon=0
+
+  return (
+    <div className="flex flex-col gap-6">
+      {/* Global Streak Header */}
+      <div className="flex justify-between items-center bg-olive-light/30 p-4 rounded-2xl border border-olive-light">
+        <div>
+          <p className="font-display font-black text-2xl text-midnight tracking-tight">
+            🔥 {FAMILY_STREAK_COUNT} DAYS
+          </p>
+          <p className="text-[10px] uppercase font-bold text-olive-dark/60 tracking-widest">
+            Family Consistency
+          </p>
+        </div>
+        <div className="size-12 rounded-full bg-olive flex items-center justify-center text-egg text-xl shadow-inner">
+          ✨
+        </div>
+      </div>
+
+      {/* Weekly Visualizer */}
+      <div>
+        <p className="text-[11px] font-bold text-gray-400 uppercase mb-3 tracking-wider">
+          Weekly Progress
+        </p>
+        <div className="flex justify-between gap-1">
+          {STREAK_DAYS.map((day, i) => (
+            <div key={i} className="flex flex-col items-center gap-2 flex-1">
+              <div
+                className={`size-8 rounded-xl flex items-center justify-center font-display font-black text-xs transition-all
+                ${i < dayIdx 
+                  ? "bg-olive text-egg" 
+                  : i === dayIdx 
+                    ? "bg-white border-2 border-olive text-olive shadow-sm" 
+                    : "bg-egg/50 text-gray-300"}`}
+              >
+                {i < dayIdx ? "✓" : day}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Individual Progress Bars */}
+      <div className="space-y-4">
+        <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+          Member Streaks
+        </p>
+        <div className="space-y-4">
+          {members.map((m) => {
+            // Calculate progress percentage (mock logic: streak out of 14 days)
+            const progress = Math.min(100, (m.streak / 14) * 100);
+            
+            return (
+              <div key={m.id} className="flex items-center gap-4">
+                <Avatar initial={m.initial} type={m.type} size="size-8" />
+                <div className="flex-1">
+                  <div className="flex justify-between items-end mb-1.5">
+                    <span className="font-display font-black text-[13px]">
+                      {m.name}
+                    </span>
+                    <span className="text-[10px] font-bold text-coral">
+                      {m.streak}d 🔥
+                    </span>
+                  </div>
+                  {/* Progress Bar Container */}
+                  <div className="h-1.5 w-full bg-egg rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all duration-1000 ${
+                        m.streak >= 7 ? "bg-olive" : "bg-jasmine"
+                      }`}
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Nudge Context Note */}
+      <div className="mt-2 p-3 bg-jasmine-light/50 rounded-xl border border-jasmine/20">
+        <p className="text-[11px] text-jasmine-dark leading-tight italic">
+          "Your family streak is safe! Just one more log needed from **Papa** to hit 8 days."
+        </p>
+      </div>
+    </div>
+  );
+};

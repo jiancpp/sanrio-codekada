@@ -1,0 +1,158 @@
+import { useState } from 'react';
+import { MemberCard } from '../features/dashboard/MemberCard';
+import { QuickAction } from '../features/dashboard/QuickAction';
+import { DailyLogPanel } from '../features/dashboard/DailyLogPanel'; // Ensure these are separate
+import { FamilyStreakPanel } from '../features/dashboard/FamilyStreakPanel';
+import Footer from '../components/layout/Footer';
+
+// Sample Data
+const MEMBERS = [
+  {
+    id: 1, initial: "MA", name: "Mama", age: 58,
+    status: "BP logged · 1h ago", type: "olive",
+    streak: 12, loggedToday: true,
+    bp: "118/76", hr: "72", sugar: "98", weight: "62",
+    meds: ["Amlodipine 5mg", "Metformin 500mg"],
+    medsChecked: [true, true],
+    conditions: ["Hypertension", "Type 2 Diabetes"],
+    bloodType: "O+",
+  },
+  {
+    id: 2, initial: "PA", name: "Papa", age: 62,
+    status: "⚠️ Missed meds today", type: "jasmine",
+    streak: 5, loggedToday: false,
+    bp: "135/88", hr: "80", sugar: "112", weight: "78",
+    meds: ["Losartan 50mg", "Atorvastatin 20mg"],
+    medsChecked: [false, false],
+    conditions: ["Hypertension", "High Cholesterol"],
+    bloodType: "A+",
+  },
+  {
+    id: 3, initial: "KU", name: "Kuya", age: 30,
+    status: "Dubai · Logged today ✓", type: "coral",
+    streak: 7, loggedToday: true,
+    bp: "120/80", hr: "68", sugar: "90", weight: "74",
+    meds: ["Vitamin D 1000IU"],
+    medsChecked: [true],
+    conditions: [],
+    bloodType: "B+",
+  },
+  {
+    id: 4, initial: "SH", name: "Shielo", age: 25,
+    status: "Log today's vitals →", type: "mauve",
+    streak: 3, loggedToday: false,
+    bp: "—", hr: "—", sugar: "—", weight: "—",
+    meds: ["Ferrous Sulfate 325mg"],
+    medsChecked: [false],
+    conditions: ["Iron Deficiency Anemia"],
+    bloodType: "AB+",
+  },
+];
+
+export default function FamilyDashboard() {
+  const [selected, setSelected] = useState(MEMBERS[0]);
+  const [activeTab, setActiveTab] = useState("log"); // 'log' or 'streak'
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText("https://talacare.app/join/reyes-family-771");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="min-h-screen bg-egg text-midnight">
+      {/* Header */}
+      <header className="max-w-6xl mx-auto px-6 pt-10 pb-6 flex justify-between items-end">
+        <div>
+          <h1 className="font-display font-black text-3xl tracking-tight uppercase">Family Dashboard</h1>
+          <p className="text-sm text-gray-400 font-medium italic">Subtitle</p>
+        </div>
+        
+        <button 
+          onClick={handleCopyLink}
+          className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-bold text-sm transition-all active:scale-95 shadow-sm
+            ${copied ? 'bg-olive text-egg' : 'bg-midnight text-egg hover:bg-olive-dark'}`}
+        >
+          <span>{copied ? '✅' : '🔗'}</span>
+          {copied ? 'Copied!' : 'Copy Invite Link'}
+        </button>
+      </header>
+
+      {/* Main Grid */}
+      <main className="max-w-6xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        {/* Left: Members Grid */}
+        <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-4 auto-rows-min">
+          {MEMBERS.map((member) => (
+            <MemberCard 
+              key={member.id} 
+              member={member} 
+              selected={selected?.id === member.id}
+              onClick={setSelected}
+            />
+          ))}
+        </div>
+
+        {/* Right: Interaction & Tools */}
+        <div className="lg:col-span-5 flex flex-col gap-6">
+          
+          {/* Interaction Panel */}
+          <div className="bg-white rounded-[20px] border border-olive-light overflow-hidden shadow-sm flex flex-col">
+            {/* Tabs Navigation */}
+            <div className="flex border-b border-olive-light">
+              <button
+                onClick={() => setActiveTab("streak")}
+                className={`flex-1 py-4 font-display font-black text-xs uppercase tracking-widest transition-all
+                  ${activeTab === "streak" ? "bg-white border-b-2 border-olive text-midnight" : "bg-egg/50 text-gray-400"}`}
+              >
+                Family Streak
+              </button>
+              <button
+                onClick={() => setActiveTab("log")}
+                className={`flex-1 py-4 font-display font-black text-xs uppercase tracking-widest transition-all
+                  ${activeTab === "log" ? "bg-white border-b-2 border-olive text-midnight" : "bg-egg/50 text-gray-400"}`}
+              >
+                Daily Log
+              </button>
+            </div>
+
+            {/* Tab Content */}
+            <div className="p-6 overflow-y-auto max-h-[500px]">
+              {activeTab === "streak" ? (
+                <FamilyStreakPanel members={MEMBERS} />
+              ) : (
+                <DailyLogPanel member={selected} />
+              )}
+            </div>
+          </div>
+
+          {/* Tools Grid */}
+          <div className="space-y-3">
+            <QuickAction 
+              title="Upload Lab Tests" 
+              icon="🖼️" 
+              colorClass="bg-jasmine-light" 
+              sub="Store results per member" 
+            />
+            <QuickAction 
+              title="Medication Schedule" 
+              icon="💊" 
+              colorClass="bg-coral-light" 
+              sub={`${MEMBERS.filter(m => !m.loggedToday).length} members pending logs`} 
+            />
+            <QuickAction 
+              title="Emergency Info" 
+              icon="🆘" 
+              colorClass="bg-coral-light" 
+              isDark 
+              sub="Quick access to blood types & meds" 
+            />
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}
