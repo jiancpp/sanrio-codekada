@@ -1,37 +1,34 @@
 const Family = require('../models/Family');
 const User = require('../models/User');
+const words = ['PUSO', 'LAYA', 'BUHAY', 'TAHANAN', 'BIGAY', 'YAKAP', 'TULONG', 'LIGTAS'];
 
 exports.createFamily = async (req, res) => {
     try {
         const { familyName, userId } = req.body;
 
-        let familyCode;
-        let isUnique = false;
+        const word = words[Math.floor(Math.random() * words.length)];
+        const nums = Math.floor(1000 + Math.random() * 9000);
+        const familyCode = `${word}-${nums}`.trim().toUpperCase();
 
-        while (!isUnique) {
-            // Generate a 6-character code
-            familyCode = Math.floor(100000 + Math.random() * 900000).toString();
-            const existing = await Family.findOne({ familyCode });
-            if (!existing) {
-                isUnique = true;
-            }
-        }
-
-        const newFamily = new Family({
+        const newFamily = await Family.create({
             familyCode,
             familyName,
             members: [userId]
         });
 
-        await newFamily.save();
-        // Update user to have this family code
         await User.findByIdAndUpdate(userId, { familyCode });
 
         res.status(201).json({ message: "Family created!", family: newFamily });
+
     } catch (err) {
+        // handle duplicate key error
+        if (err.code === 11000) {
+            return res.status(409).json({ error: "Code collision, retry request" });
+        }
+
         res.status(500).json({ error: err.message });
     }
-}
+};
 
 exports.joinFamily = async (req, res) => {
     try {

@@ -35,6 +35,33 @@ export const useApi = () => {
         }
     }
 
+    const createFamily = async ({ familyName, userId }) => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const response = await fetch(`${BASE_URL}/family/create`, {
+                method: 'POST',
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ familyName, userId })
+            })
+
+            const family = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Register failed');
+            }
+            
+            return family; // Return family code
+
+        } catch (err) {
+            setError(err.message);
+            return null;
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     const joinFamily = async ({ familyCode, userId }) => {
         setIsLoading(true);
         setError(null);
@@ -52,7 +79,7 @@ export const useApi = () => {
                 throw new Error(data.message || 'Register failed');
             }
             
-            return data; // Return user data to the component
+            return data; // Return family data to the component
 
         } catch (err) {
             setError(err.message);
@@ -69,6 +96,7 @@ export const useApi = () => {
     return { 
         // Add new API calls here
         register, 
+        createFamily,
         joinFamily,
         isLoading, 
         error 

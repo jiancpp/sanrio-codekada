@@ -231,20 +231,35 @@ const ChoosePath = ({ onChoose }) => (
    STEP 2A — CREATE FAMILY
 ══════════════════════════════════════════════ */
 const CreateFamily = ({ onBack, onSuccess, user }) => {
+  const { createFamily, error, isLoading } = useApi()
   const [name, setName] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [code, setCode] = useState('');
   const [copied, setCopied] = useState(false);
 
-  const handleCreate = (e) => {
+  const handleCreate = async (e) => {
     e.preventDefault();
-    if (!name.trim()) return;
-    setCode(generateCode());
+    if (!name.trim() || !user?._id) return;
+    const data = await createFamily({ familyName: name, userId: user._id });
+    console.log(data)
+    if (!data) {
+      alert("Failed to create family. Please try again.");
+      return;
+    }
+    
+    setCode(data.family.familyCode);
     setSubmitted(true);
+  
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(code);
+    const message = `You're invited to TalaCare ❤️
+
+Join my family using this code: ${code}
+
+🌐 https://talacare.onrender.com/`;
+
+  navigator.clipboard.writeText(message);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
