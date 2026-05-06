@@ -16,6 +16,22 @@ export const getAge = (birthdate) => {
     return age
 }
 
+export const formatDate = (dateInput) => {
+  if (!dateInput) return null;
+
+  const date = new Date(dateInput);
+
+  if (isNaN(date.getTime())) {
+    return null;
+  }
+
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
 // Helper: format LOCAL date to YYYY-MM-DD
 export const formatLocalDate = (date) => {
     const y = date.getFullYear();

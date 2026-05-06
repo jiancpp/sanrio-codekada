@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
+
 import { MemberCard } from '../features/dashboard/MemberCard';
 import { QuickAction } from '../features/dashboard/QuickAction';
 import { DailyLogPanel } from '../features/dashboard/DailyLogPanel'; // Ensure these are separate
 import { FamilyStreakPanel } from '../features/dashboard/FamilyStreakPanel';
+
+import Navbar from "../components/layout/Navbar";
 import Footer from '../components/layout/Footer';
 
 import { useNavigate } from 'react-router-dom';
@@ -130,8 +133,9 @@ Join my family using this code: ${family?.familyCode}
 
   return (
     <div className="min-h-screen bg-egg text-midnight">
+      <Navbar variant="auth" />
       {/* Header */}
-      <header className="max-w-6xl mx-auto px-6 pt-10 pb-6 flex justify-between items-end">
+      <header className="max-w-6xl mx-auto px-6 pt-30 pb-6 flex justify-between items-end">
         <div>
           <h1 className="font-display font-black text-3xl tracking-tight uppercase">Family Dashboard</h1>
           <p className="text-sm text-gray-400 font-medium italic">{family?.familyName}</p>
