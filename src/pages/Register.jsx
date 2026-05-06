@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { PeopleFill, GlobeAmericas, HeartFill, ShieldLockFill, EyeFill, EyeSlashFill, PersonFill } from 'react-bootstrap-icons';
+import { PeopleFill, GlobeAmericas, HeartFill, ShieldLockFill, EyeFill, EyeSlashFill, PersonFill, EnvelopeFill} from 'react-bootstrap-icons';
 
 const Register = () => {
   const [formData, setFormData] = useState({
     name: '',
     password: '',
+    email: '',
     confirmPassword: ''
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -23,7 +24,7 @@ const Register = () => {
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 font-body">
 
       {/* ── LEFT COLUMN: Branding ── */}
-      <div className="hidden lg:flex relative bg-midnight items-center justify-center p-12 overflow-hidden">
+      <div className="hidden lg:flex relative bg-midnight items-start justify-center pt-24 pb-12 p-12 overflow-hidden">
 
         {/* Decorative circles */}
         <div className="absolute w-[400px] h-[400px] rounded-full bg-olive opacity-15 -top-36 -right-24 pointer-events-none" />
@@ -51,8 +52,8 @@ const Register = () => {
           <div className="flex flex-col gap-3.5">
             {[
               { icon: <PeopleFill/>, title: 'Family First', sub: 'Health sync for everyone', delay: '0s' },
-              { icon: <GlobeAmericas/>, title: 'Works Anywhere', sub: 'Dubai, Singapore, Canada...', delay: '2s' },
-              { icon: <HeartFill/>, title: '100% Free', sub: 'No hidden fees, ever', delay: '4s' },
+              { icon: <GlobeAmericas/>, title: 'Works Anywhere', sub: 'Dubai, Singapore, Canada...', delay: '0.2s' },
+              { icon: <HeartFill/>, title: '100% Free', sub: 'No hidden fees, ever', delay: '0.4s' },
             ].map(({ icon, title, sub, delay }) => (
               <div
                 key={title}
@@ -98,8 +99,26 @@ const Register = () => {
                   type="text"
                   id="name"
                   name="name"
-                  placeholder="Enter your full name"
+                  placeholder="Enter your name"
                   value={formData.name}
+                  onChange={handleChange}
+                  required
+                  className="w-full pl-11 pr-4 py-3.5 border-2 border-olive-light rounded-[0.875rem] text-[0.9375rem] text-midnight bg-white placeholder-[#b0b0b0] transition-all focus:outline-none focus:border-olive focus:shadow-[0_0_0_3px_rgba(115,138,119,0.15)]"
+                />
+              </div>
+            </div>
+
+            {/* Email */}
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="name" className="font-semibold text-sm text-midnight">Email</label>
+              <div className="relative flex items-center">
+                <span className="absolute left-4 text-mauve pointer-events-none"><EnvelopeFill/></span>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  placeholder="Enter your email address"
+                  value={formData.email}
                   onChange={handleChange}
                   required
                   className="w-full pl-11 pr-4 py-3.5 border-2 border-olive-light rounded-[0.875rem] text-[0.9375rem] text-midnight bg-white placeholder-[#b0b0b0] transition-all focus:outline-none focus:border-olive focus:shadow-[0_0_0_3px_rgba(115,138,119,0.15)]"
