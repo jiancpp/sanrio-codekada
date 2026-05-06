@@ -66,10 +66,13 @@ if (process.env.NODE_ENV === 'production') {
 
   app.use(express.static(distPath));
 
-  app.get('/(.*)', (req, res) => {
+  app.use((req, res, next) => {
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+
     res.sendFile(path.join(distPath, 'index.html'));
   });
 }
-
 const PORT = process.env.PORT || 5001;
 server.listen(PORT, () => console.log(`Server on port ${PORT}`));
