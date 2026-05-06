@@ -3,14 +3,14 @@ const User = require('../models/User');
 
 exports.createLabTest = async (req, res) => {
     try {
-        const { familyCode, member, testName, testDate, notes, attachments } = req.body;
+        const { familyCode, member, testName, testDate, findingsSummary, attachments } = req.body;
 
         const newTest = new LabTest({
             familyCode,
             member,
             testName,
             testDate,
-            notes,
+            findingsSummary,
             attachments
         });
 

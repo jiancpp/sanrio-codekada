@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const MonthlySummary = require('../models/MonthlySummary');
 const DailyLog = require('../models/DailyLog');
 const Family = require('../models/Family'); // To find family members
@@ -70,21 +71,28 @@ exports.getMonthlySummary = async (req, res) => {
     }
 };
 
-exports.generateMonthlySummary = async (familyId, month, year) => {
+exports.generateMonthlySummary = async (req, res) => {
     try {
+        const { familyId, month, year } = req.body
+
+        if (!familyId || !month || !year) {
+            return res.status(400).json({ error: "Missing familyId, month, or year" });
+        }
+
         const startDate = new Date(year, month - 1, 1);
         const endDate = new Date(year, month, 0, 23, 59, 59);
 
+        // Check and update existing summary
+        await MonthlySummary.deleteMany({ familyId: familyId, month: startDate })
+
         // Get all members of the family
-        const family = await Family.findById(familyId);
-        const currentTests = await LabTest.find({
-            member: member._id,
-            testDate: { $gte: startDate, $lte: endDate }
-        });
+        const family = await Family.findById(familyId).populate('members');     
+        
+        if (!family) {
+            return res.status(404).json({ error: "Family not found" });
+        }
 
         const memberSummaries = [];
-        const memberLabComparisons = [];
-
         for (const member of family.members) {
             // --- Log Summary ---
             // Fetch Daily Logs for this member for the specific month
@@ -103,6 +111,13 @@ exports.generateMonthlySummary = async (familyId, month, year) => {
             };
 
             // --- Lab Tests Summary ---
+            const memberLabComparisons = [];
+            const currentTests = await LabTest.find({
+                member: member._id,
+                testDate: { $gte: startDate, $lte: endDate }
+            });
+
+
             for (const current of currentTests) {
                 // Find the most recent test with the SAME NAME before this month
                 const previous = await LabTest.findOne({
@@ -114,7 +129,7 @@ exports.generateMonthlySummary = async (familyId, month, year) => {
                 let comparisonNote = "No previous data for comparison.";
                 
                 // Logic for Auto-Comparison if items exist
-                if (previous && current.items.length > 0 && previous.items.length > 0) {
+                if (previous && current.items?.length > 0 && previous.items?.length > 0) {
                     // Example: Compare the first item's result
                     const diff = current.items[0].result - previous.items[0].result;
                     comparisonNote = `${current.items[0].name} changed by ${diff}`;
@@ -129,36 +144,40 @@ exports.generateMonthlySummary = async (familyId, month, year) => {
                     previousResultId: previous ? previous._id : null,
                     comparisonNote
                 });
-            }
-            
-            // Build the individual summary object
-            memberSummaries.push({
-                memberId: member._id,
-                memberName: member.name,
-                labComparisons: memberLabComparisons,
 
-                logsSummary: {
-                    totalLogsEntries: totalLogs,
-                    averageVitals: avgVitals,
-                    alarmingLevels: identifyAlarms(logs), // Using your helper function
-                    generalObservation: totalLogs > 20 ? "Consistent tracking" : "Inconsistent tracking"
-                }
-            });
+            }
+
+            if (memberLabComparisons.length > 0 || logs.length > 0) {
+                // Build the individual summary object
+                memberSummaries.push({
+                    memberId: member._id,
+                    memberName: member.name,
+                    labComparisons: memberLabComparisons,
+
+                    logsSummary: {
+                        totalLogsEntries: totalLogs,
+                        averageVitals: avgVitals,
+                        alarmingLevels: identifyAlarms(logs), // Using your helper function
+                        generalObservation: totalLogs > 20 ? "Consistent tracking" : "Inconsistent tracking"
+                    }
+                });
+            }
         }
 
         // Save or Update the MonthlySummary document
-        const summary = await MonthlySummary.findOneAndUpdate(
-            { familyId, month: startDate },
-            { 
-                memberSummaries,
-                generatedAt: new Date()
-            },
-            { upsert: true, new: true }
-        );
+        if (memberSummaries.length === 0) return res.status(400).json({ message: "Insufficient data." });
+        const summary = new MonthlySummary({
+            familyId, 
+            month: startDate, 
+            memberSummaries,
+            generatedAt: new Date()
+         });
 
-        return summary;
+        await summary.save();
+
+        res.status(200).json({ message: "Summary created!", summary: summary });
     } catch (err) {
-        console.error("Generation Error:", err);
-        throw err;
+        res.status(500).json({ error: err.message });
+
     }
 };

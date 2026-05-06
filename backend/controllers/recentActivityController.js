@@ -1,9 +1,10 @@
+const mongoose = require('mongoose');
 const RecentActivity = require('../models/RecentActivity');
 
 exports.getRecentActivity = async (req, res) => {
     try {
         const { familyId } = req.params;
-        
+
         const activities = await RecentActivity.aggregate([
             { $match: { familyId: new mongoose.Types.ObjectId(familyId) } },
             { $sort: { createdAt: -1 } },
@@ -20,7 +21,7 @@ exports.getRecentActivity = async (req, res) => {
             // Look up user details (since .populate doesn't work inside aggregate)
             {
                 $lookup: {
-                    from: "User", // make sure this matches your User collection name
+                    from: "users", // make sure this matches your User collection name
                     localField: "userId",
                     foreignField: "_id",
                     as: "userDoc"
@@ -35,9 +36,12 @@ exports.getRecentActivity = async (req, res) => {
                     description: 1,
                     createdAt: 1,
                     "userDoc.name": 1,
+                    "userDoc._id": 1,
                 }
             }
         ])
+
+        if (activities.length === 0) return res.status(403).json({ message: "Did not return anything" })
         res.status(200).json(activities);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -47,12 +51,13 @@ exports.getRecentActivity = async (req, res) => {
 
 exports.postRecentActivity = async (req, res) => {
     try {
-        const { userId, familyId, familyCode, type } = req.body
+        const { userId, familyId, familyCode, type, description } = req.body
         const newActivity = new RecentActivity({
             userId,
             familyId,
             familyCode,
-            type
+            type,
+            description
         })
         await newActivity.save();
         res.status(200).json(newActivity);

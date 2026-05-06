@@ -1,0 +1,157 @@
+### Variables
+@token = {{login.response.body.token}}
+@familyId = 69faa6eb8b503120df390e83
+@userId = 69faa5e46f417faba02b1dc9
+@lolaId = 69faa5bf6f417faba02b1dc7
+@familyCode = 485477
+
+# ==========================================
+# USER ROUTES
+# ==========================================
+
+### Register User (Lola)
+POST http://localhost:5001/api/users/register
+Content-Type: application/json
+
+{
+    "email": "jiannaclarisse.tm@gmail.com",
+    "name": "Lola Tessie",
+    "role": "Manager",
+    "password": "SinigangNaBaboy"
+}
+
+### Login (As Manager/Papa)
+# @name login
+POST http://localhost:5001/api/users/login
+Content-Type: application/json
+
+{
+    "email": "dobadoba911@gmail.com",
+    "password": "SinigangNaBaboy"
+}
+
+### Test Get Family Member (Single)
+GET http://localhost:5001/api/users/member/{{userId}}
+Authorization: Bearer {{token}}
+
+### Test Get Family Members (All)
+GET http://localhost:5001/api/users/family/TALA2026
+Authorization: Bearer {{token}}
+
+### Test Update Info
+PUT http://localhost:5001/api/users/profile/edit-info/{{lolaId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "Lola Tessie"
+}
+
+# ==========================================
+# FAMILY ROUTES
+# ==========================================
+### Test Create Family
+POST  http://localhost:5001/api/family/create
+Content-Type: application/json
+
+{
+    "familyName": "Reyes Family",
+    "userId": "{{userId}}"
+}
+
+### Test Join Family
+POST  http://localhost:5001/api/family/join
+Content-Type: application/json
+
+{
+    "familyCode": "{{familyCode}}",
+    "userId": "{{lolaId}}"
+}
+
+# ==========================================
+# NOTIFICATION ROUTES
+# ==========================================
+### Test Notify Member
+POST http://localhost:5001/api/system/notify-member
+x-system-key: your_super_secret_key_here
+Content-Type: application/json
+
+{
+    "familyCode": "{{familyCode}}",
+    "member": "{{userId}}",
+    "message": "Debugging message example"
+}
+
+### Test Notify Family
+POST  http://localhost:5001/api/system/notify-family
+x-system-key: your_super_secret_key_here
+Content-Type: application/json
+
+{
+  "familyCode": "{{familyCode}}",
+  "message": "Debugging message example"
+}
+
+### Test Remove Notification
+# Note: Edit notification id in the parameters
+DELETE  http://localhost:5001/api/system/delete/69fa19354c422e9db73c6bd1
+Authorization: Bearer {{token}}
+
+
+# ==========================================
+# RECENT ACTIVITY ROUTES
+# ==========================================
+
+### Post Activity (e.g., Logged BP)
+POST http://localhost:5001/api/system/post-activity
+x-system-key: your_super_secret_key_here
+Content-Type: application/json
+
+{
+    "userId": "{{lolaId}}",
+    "familyId": "{{familyId}}",
+    "type": "LOG_VITAL",
+    "description": "Log vitals today"
+}
+
+### Get Activity (One per person for the family)
+GET http://localhost:5001/api/system/get-activity/{{familyId}}
+Authorization: Bearer {{token}}
+
+# ==========================================
+# MONTHLY SUMMARY ROUTES
+# ==========================================
+
+### Generate Summary (Run this first to populate DB)
+# Note: Ensure familyId exists in your DB
+POST http://localhost:5001/api/system/generate-summary
+x-system-key: your_super_secret_key_here
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "familyId": "{{familyId}}",
+    "month": 5,
+    "year": 2026
+}
+
+### Get Monthly Summary
+GET http://localhost:5001/api/system/get-summary?familyId={{familyId}}&month=5&year=2026
+Authorization: Bearer {{token}}
+
+# ==========================================
+# LAB TESTS (With New Items Array)
+# ==========================================
+
+### Create Lab Test with Structured Items
+POST http://localhost:5001/api/lab-tests/add
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "familyCode": "{{familyCode}}",
+    "member": "{{lolaId}}",
+    "testName": "CBC",
+    "testDate": "2026-05-06T08:00:00Z",
+    "findingsSummary": "Cholesterol is slightly elevated compared to last March."
+}

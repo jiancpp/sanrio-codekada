@@ -107,6 +107,9 @@ exports.loginUser = async(req, res) => {
 
 exports.editMemberInfo = async(req, res) => {
     try {
+        // Check family code
+        if (!req.user.familyCode) return res.status(403).json({ message: "Cannot edit. Not in a family yet." });
+
         const user = await User.findById(req.params.id);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
