@@ -48,6 +48,7 @@ io.on('connection', (socket) => {
 });
 
 // Use Routes
+const path = require('path');
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/daily-log', require('./routes/dailyLogRoutes'));
 app.use('/api/family', require('./routes/familyRoutes'));
@@ -60,18 +61,13 @@ initCronJobs();
 // Export 'io' globally
 app.set('io', io);
 
-const path = require('path');
 if (process.env.NODE_ENV === 'production') {
-  // Serve static files from the 'dist' folder
-  app.use(express.static(path.join(__dirname, '../dist')));
-
-  // Catch-all route to serve index.html
+  // Use the built-in __dirname (no extra code needed)
+  const distPath = path.join(__dirname, '../dist');
+  
+  app.use(express.static(distPath));
   app.get('(.*)', (req, res) => {
-    res.sendFile(path.join(__dirname, '../dist', 'index.html'));
-  });
-} else {
-  app.get('/', (req, res) => {
-    res.send('API is running in development mode...');
+    res.sendFile(path.join(distPath, 'index.html'));
   });
 }
 
