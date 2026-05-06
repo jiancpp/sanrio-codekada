@@ -8,14 +8,14 @@ export const useApi = () => {
     /* ══════════════════════════════════════════════
         ACCOUNT SETUP FUNCTIONS
         ══════════════════════════════════════════════ */
-    const register = async ({name, email, password}) => {
+    const register = async ({ name, email, password }) => {
         setIsLoading(true);
         setError(null);
 
         try {
             const response = await fetch(`${BASE_URL}/users/register`, {
                 method: 'POST',
-                headers: {"Content-Type": "application/json"},
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name, email, password })
             })
 
@@ -24,7 +24,7 @@ export const useApi = () => {
             if (!response.ok) {
                 throw new Error(data.message || 'Register failed');
             }
-            
+
             return data; // Return user data to the component
 
         } catch (err) {
@@ -42,7 +42,7 @@ export const useApi = () => {
         try {
             const response = await fetch(`${BASE_URL}/family/create`, {
                 method: 'POST',
-                headers: {"Content-Type": "application/json"},
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ familyName, userId })
             })
 
@@ -51,7 +51,7 @@ export const useApi = () => {
             if (!response.ok) {
                 throw new Error(data.message || 'Register failed');
             }
-            
+
             return family; // Return family code
 
         } catch (err) {
@@ -69,7 +69,7 @@ export const useApi = () => {
         try {
             const response = await fetch(`${BASE_URL}/family/join`, {
                 method: 'POST',
-                headers: {"Content-Type": "application/json"},
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ familyCode, userId })
             })
 
@@ -78,9 +78,120 @@ export const useApi = () => {
             if (!response.ok) {
                 throw new Error(data.message || 'Register failed');
             }
-            
+
             return data; // Return family data to the component
 
+        } catch (err) {
+            setError(err.message);
+            return null;
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    /* ══════════════════════════════════════════════
+        DAILY LOG FUNCTIONS
+        ══════════════════════════════════════════════ */
+    const addLog = async (logData) => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const response = await fetch(`${BASE_URL}/daily-log/add`, {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(logData)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to add log');
+            }
+
+            // We return data.value because of the rawResult: true in your controller
+            return data.value;
+        } catch (err) {
+            setError(err.message);
+            return null;
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    const getFamilyLogs = async (familyCode) => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const response = await fetch(`${BASE_URL}/daily-log/family/${familyCode}`, {
+                method: 'GET', 
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to get family log');
+            }
+
+            return data;
+        } catch (err) {
+            setError(err.message);
+            return null;
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    const getUserLogs = async (userId) => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const response = await fetch(`${BASE_URL}/daily-log/user/${userId}`, {
+                method: 'GET', 
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to get user logs');
+            }
+
+            return data;
+        } catch (err) {
+            setError(err.message);
+            return null;
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    const getFamilyStreak = async (familyCode) => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const response = await fetch(`${BASE_URL}/daily-log/streak/${familyCode}`, {
+                method: 'GET', 
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to get family streak');
+            }
+
+            return data;
         } catch (err) {
             setError(err.message);
             return null;
@@ -93,13 +204,17 @@ export const useApi = () => {
         <REPLACE HEADER>
         ══════════════════════════════════════════════ */
 
-    return { 
+    return {
         // Add new API calls here
-        register, 
+        register,
         createFamily,
         joinFamily,
-        isLoading, 
-        error 
-    };   
+        addLog,
+        getFamilyLogs,
+        getFamilyStreak,
+        getUserLogs,
+        isLoading,
+        error
+    };
 }
 

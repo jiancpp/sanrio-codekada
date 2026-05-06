@@ -1,0 +1,17 @@
+### Create a Family
+POST http://localhost:5001/api/family/create
+Content-Type: application/json
+
+{
+    "familyName": "The Sanrio Crew",
+    "adminId": "6637...your_user_id_here..."
+}
+
+### Join a Family
+POST http://localhost:5001/api/family/join
+Content-Type: application/json
+
+{
+    "userId": "6638...another_user_id...",
+    "familyCode": "123456" 
+}
