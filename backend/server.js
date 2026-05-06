@@ -30,7 +30,13 @@ app.use(express.json());
 
 // DB Connection
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("Connected to MongoDB"))
+  .then(() => {
+    console.log("Connected to MongoDB")
+
+    // Start cron ONLY after DB is ready
+    console.log("Initializing Cron Jobs...");
+    initCronJobs();
+  })
   .catch(err => console.log(err));
 
 // Socket.io Logic
@@ -54,9 +60,6 @@ app.use('/api/daily-log', require('./routes/dailyLogRoutes'));
 app.use('/api/family', require('./routes/familyRoutes'));
 app.use('/api/lab-tests', require('./routes/labTestRoutes'));
 app.use('/api/system', require('./routes/systemRoutes'));
-
-// Start scheduler
-initCronJobs();
 
 // Export 'io' globally
 app.set('io', io);
