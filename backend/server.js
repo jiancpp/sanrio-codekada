@@ -8,6 +8,10 @@ require('dotenv').config();
 
 const initCronJobs = require('./services/cronTasks');
 
+const BASE_URL = import.meta.env.PROD 
+? '/'
+: 'http://localhost:5001/';
+
 const app = express()
 const server = http.createServer(app); // 3. Create the HTTP server
 

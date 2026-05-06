@@ -20,7 +20,7 @@ exports.createLog = async (req, res) => {
             const user = await User.findById(userId);
 
             if (user) {
-                user.currentStreak++;
+                user.streak++;
                 await user.save();
             }
         }
