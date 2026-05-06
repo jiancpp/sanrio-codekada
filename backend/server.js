@@ -62,24 +62,14 @@ initCronJobs();
 app.set('io', io);
 
 if (process.env.NODE_ENV === 'production') {
-  // Use the built-in __dirname (no extra code needed)
   const distPath = path.join(__dirname, '../dist');
-  
+
   app.use(express.static(distPath));
-  app.get('/:path*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../dist', 'index.html'));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'));
   });
 }
 
 const PORT = process.env.PORT || 5001;
-
-app.use((req, res, next) => {
-  // If the request is for an API or an actual file, skip this
-  if (req.path.startsWith('/api') || path.extname(req.path)) {
-    return next();
-  }
-  // Otherwise, send the frontend
-  res.sendFile(path.join(__dirname, '../dist', 'index.html'));
-});
-
 server.listen(PORT, () => console.log(`Server on port ${PORT}`));
