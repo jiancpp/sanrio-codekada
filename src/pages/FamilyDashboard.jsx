@@ -61,7 +61,13 @@ export default function FamilyDashboard() {
   const [copied, setCopied] = useState(false);
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(`https://talacare.app/family/join/${family?.familyCode}`);
+    const message = `You're invited to TalaCare ❤️
+
+Join my family using this code: ${family?.familyCode}
+
+🌐 https://talacare.onrender.com/`;
+    
+    navigator.clipboard.writeText(message);    
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

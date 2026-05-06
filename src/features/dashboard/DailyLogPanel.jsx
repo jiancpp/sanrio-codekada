@@ -1,8 +1,37 @@
 import { useState, useEffect } from 'react';
 import { Avatar } from '../../components/ui/Avatar';
+import { useApi } from '../../hooks/useApi';
+import { useMediaUpload } from '../../hooks/useMediaUpload';
 
 export const DailyLogPanel = ({ member }) => {
+  /**
+   * NEED:
+   *  get daily log by member id and date today
+   *  create/update daily log today - /add
+   * 
+   *  check which day
+   */
+  const { 
+    mediaAttachments, uploading, handleMediaUpload, 
+    deleteMedia, resetMedia, setMedia,
+    cropImageSrc, setCropImageSrc
+  } = useMediaUpload(null, { multiple: false });  // Edit multiple later
+
+  useEffect(() => {
+    console.log("mediaAttachments:", mediaAttachments);
+  }, [mediaAttachments]);
+
+
   const [isSaved, setIsSaved] = useState(false);
+  const { error, isLoading } = useApi()
+
+  // Forms Data
+  // Todo initialize from member's daily log for the day
+  const [weight, setWeight] = useState('');
+  const [bloodPressure, setBloodPressure] = useState('')
+  const [heartRate, setHeartRate] = useState('')
+  const [bloodSugar, setBloodSugar] = useState('')
+  const [waterIntake, setWaterIntake] = useState('')
   
   // Logic for scheduling meds (Sample data)
   const medSchedule = (med) =>{
@@ -12,7 +41,7 @@ export const DailyLogPanel = ({ member }) => {
   };
 
   const handleSave = () => {
-    
+    console.log(weight);
 
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 2000);
@@ -35,13 +64,13 @@ export const DailyLogPanel = ({ member }) => {
       <div className="space-y-4">
         <p className="text-[11px] font-black text-gray-400 uppercase tracking-wider">Biometrics</p>
         <div className="grid grid-cols-2 gap-3">
-          <LogInput label="Weight" placeholder="0.0" unit="kg" />
-          <LogInput label="Blood Pressure" placeholder="120/80" unit="mmHg" />
-          <LogInput label="Heart Rate" placeholder="72" unit="bpm" />
-          <LogInput label="Blood Sugar" placeholder="95" unit="mg/dL" />
+          <LogInput label="Weight" value={weight} placeholder="0.0" unit="kg" onChange={setWeight} />
+          <LogInput label="Blood Pressure" value={bloodPressure} placeholder="120/80" unit="mmHg" onChange={setBloodPressure} />
+          <LogInput label="Heart Rate" value={heartRate} placeholder="72" unit="bpm" onChange={setHeartRate} />
+          <LogInput label="Blood Sugar" value={bloodSugar} placeholder="95" unit="mg/dL" onChange={setBloodSugar} />
         </div>
         <div className="w-full">
-            <LogInput label="Water Intake" placeholder="0" unit="glasses" />
+            <LogInput label="Water Intake" value={waterIntake} placeholder="0" unit="glasses" onChange={setWaterIntake} />
         </div>
       </div>
 
@@ -76,10 +105,24 @@ export const DailyLogPanel = ({ member }) => {
           <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-olive-light rounded-xl cursor-pointer hover:bg-olive-light/20 transition-all">
             <div className="flex flex-col items-center justify-center pt-5 pb-6">
               <span className="text-lg">📸</span>
-              <p className="text-[10px] text-gray-400 font-bold uppercase">Attach Image</p>
+              <p className="text-[10px] text-gray-400 font-bold uppercase">Attach Image </p>
             </div>
-            <input type="file" className="hidden" accept="image/*" />
+            <input 
+              type="file" 
+              className="hidden" 
+              accept="image/*"
+              onChange={handleMediaUpload}
+              />
           </label>
+          {mediaAttachments && (
+              <div className="mt-3">
+                <img
+                    src={mediaAttachments.url}
+                    alt="upload"
+                    className="w-full rounded-xl border border-olive-light"
+                  />
+              </div>
+            )}
         </div>
 
         <div className="space-y-2">
@@ -105,14 +148,16 @@ export const DailyLogPanel = ({ member }) => {
 };
 
 // Internal Helper Component
-const LogInput = ({ label, placeholder, unit }) => (
+const LogInput = ({ label, placeholder, value, unit, onChange }) => (
   <div className="flex flex-col gap-1.5">
     <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">{label}</label>
     <div className="relative">
       <input 
         type="text"
+        value={value}
         placeholder={placeholder}
         className="w-full bg-white border border-olive-light rounded-xl p-3 pr-12 text-sm font-display font-black focus:outline-none focus:border-olive shadow-sm"
+        onChange={(e) => onChange(e.target.value)}
       />
       <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] font-bold text-gray-400 uppercase">
         {unit}
