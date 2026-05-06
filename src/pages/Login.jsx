@@ -67,13 +67,13 @@ const Login = () => {
           <div className="flex flex-col gap-3.5">
             {[
               { icon: <PeopleFill/>, title: 'Family First', sub: 'Health sync for everyone', delay: '0s' },
-              { icon: <GlobeAmericas/>, title: 'Works Anywhere', sub: 'Dubai, Singapore, Canada...', delay: '2s' },
-              { icon: <HeartFill/>, title: '100% Free', sub: 'No hidden fees, ever', delay: '4s' },
+              { icon: <GlobeAmericas/>, title: 'Works Anywhere', sub: 'At Home,', delay: '0.2s' },
+              { icon: <HeartFill/>, title: '100% Free', sub: 'No hidden fees, ever', delay: '0.4s' },
             ].map(({ icon, title, sub, delay }) => (
               <div
                 key={title}
                 className="flex items-center gap-3.5 bg-white/[0.08] backdrop-blur border border-white/10 px-5 py-4 rounded-2xl"
-                style={{ animation: `float2 6s ease-in-out ${delay} infinite` }}
+                style={{ animation: `float2 3s ease-in-out ${delay} infinite` }}
               >
                 <span className="text-2xl">{icon}</span>
                 <div className="flex flex-col">
@@ -166,7 +166,9 @@ const Login = () => {
           {/* Sign in link */}
           <p className="text-center text-sm text-mauve mt-6">
             Don't have an account?{' '}
-            <a href="/login" className="text-olive font-semibold no-underline hover:underline">Register here</a>
+            <button 
+            onClick ={() => navigate('/register')}
+          className="text-olive font-semibold no-underline hover:underline">Register here</button>
           </p>
 
           {/* Divider */}
