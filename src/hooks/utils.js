@@ -15,3 +15,19 @@ export const getAge = (birthdate) => {
 
     return age
 }
+
+export const formatDate = (dateInput) => {
+  if (!dateInput) return null;
+
+  const date = new Date(dateInput);
+
+  if (isNaN(date.getTime())) {
+    return null;
+  }
+
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
