@@ -110,19 +110,58 @@ export const DailyLogPanel = ({ member }) => {
             <input 
               type="file" 
               className="hidden" 
-              accept="image/*"
+              accept="image/*,application/pdf"
               onChange={handleMediaUpload}
               />
           </label>
           {mediaAttachments && (
-              <div className="mt-3">
-                <img
+            <div className="mt-3 relative group">
+              {mediaAttachments.isPDF ? (
+                /* PDF Preview Mode */
+                <div className="flex items-center justify-between p-4 bg-white border border-olive-light rounded-xl shadow-sm">
+                  <div className="flex items-center gap-3 overflow-hidden">
+                    <span className="text-2xl">📄</span>
+                    <div className="flex flex-col overflow-hidden">
+                      <span className="text-xs font-bold text-midnight truncate">
+                        {mediaAttachments.name || "Medical Document.pdf"}
+                      </span>
+                      <a 
+                        href={mediaAttachments.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-[10px] text-olive font-bold uppercase tracking-wider hover:underline"
+                      >
+                        View Document
+                      </a>
+                    </div>
+                  </div>
+                  
+                  {/* Delete Button */}
+                  <button 
+                    onClick={() => deleteMedia(mediaAttachments.url)}
+                    className="p-1.5 bg-coral/10 text-coral rounded-lg hover:bg-coral hover:text-white transition-colors"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ) : (
+                /* Image Preview Mode */
+                <div className="relative">
+                  <img
                     src={mediaAttachments.url}
                     alt="upload"
                     className="w-full rounded-xl border border-olive-light"
                   />
-              </div>
-            )}
+                  <button 
+                    onClick={() => deleteMedia(mediaAttachments.url)}
+                    className="absolute -top-2 -right-2 bg-coral text-white size-6 rounded-full flex items-center justify-center shadow-lg"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="space-y-2">

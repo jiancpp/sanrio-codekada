@@ -20,7 +20,8 @@ const compressFile = async (file) => {
 };
 
 const getResourceType = (file) => {
-    if (file.type === 'application/pdf') return 'raw';
+    // PDFs MUST be 'raw' to avoid the "Failed to load" image error
+    if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) return 'raw';
     if (file.type.startsWith('video/')) return 'video';
     return 'image';
 };
@@ -33,24 +34,31 @@ export const uploadToCloudinary = async (file) => {
     formData.append('file', compressed);
     formData.append('upload_preset', 'talacare_preset');
     formData.append('folder', 'talacare');
-    formData.append('display_name', `TalaCare_${Date.now()}_${file.name}`);
 
     const url = `https://api.cloudinary.com/v1_1/dmfucwoqb/${resourceType}/upload`;
-    
-    // Changing 'auto' to 'auto' is usually fine, b ut for PDFs 
-    // Cloudinary handles them as 'raw' or 'image' depending on settings.
+        
     const response = await fetch(url, {
         method: 'POST',
         body: formData,
     });
 
-    if (!response.ok) throw new Error('Cloudinary upload failed');
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || 'Cloudinary upload failed');
+    }
+
     const data = await response.json();
-    return data.secure_url;
-};
+    return {
+        url: data.secure_url,
+        resource_type: data.resource_type // 'image', 'video', or 'raw'
+    };};
 
 export function useMediaUpload(initialMedia = [], { multiple = true } = {}) {
-    const [mediaAttachments, setMediaAttachments] = useState(initialMedia);
+    // Ensure initial state matches the mode
+    const [mediaAttachments, setMediaAttachments] = useState(() => {
+        if (initialMedia) return initialMedia;
+        return multiple ? [] : null;
+    });
     const [uploading, setUploading] = useState(false);
     const [cropImageSrc, setCropImageSrc] = useState(null);
 
@@ -63,29 +71,25 @@ export function useMediaUpload(initialMedia = [], { multiple = true } = {}) {
         const isPDF = file.type === 'application/pdf';
         const isImage = file.type.startsWith('image/');
 
-        // Only trigger crop if it's an image and single-upload mode
-        // if (!multiple && isImage) {
-        //     const reader = new FileReader();
-        //     reader.onload = () => setCropImageSrc(reader.result);
-        //     reader.readAsDataURL(file);
-        //     e.target.value = "";
-        //     return;
-        // }
+      // Append to array if multiple, otherwise replace object
+        const updateState = (newEntry) => {
+            setMediaAttachments(prev => {
+                if (!multiple) return newEntry;
+                return Array.isArray(prev) ? [...prev, newEntry] : [newEntry];
+            });
+        };
 
         try {
             setUploading(true);
-            const url = await uploadToCloudinary(file);
-            console.log("uploaded url:", url);
-            
-            // Store the type so your UI can render an <img>, <video>, or <a> tag
+            const { url, resource_type } = await uploadToCloudinary(file);
             const newEntry = { 
-                url, 
-                isVideo, 
-                isPDF, 
-                name: file.name // Helpful for PDF labels
+                url,                          // This is short for url: url
+                type: resource_type,          // Keep the Cloudinary type (image/video/raw)
+                isVideo: resource_type === 'video', 
+                isPDF: file.type === 'application/pdf' || url.endsWith('.pdf'), 
+                name: file.name 
             };
-
-            setMediaAttachments(multiple ? [newEntry] : newEntry);
+            updateState(newEntry); // Use the helper
         } catch (err) {
             console.error("Upload failed:", err);
             alert("Upload failed: " + err.message);
