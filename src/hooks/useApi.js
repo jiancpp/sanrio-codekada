@@ -201,6 +201,34 @@ export const useApi = () => {
         }
     }
 
+    const getDailyLog = async (userId, date) => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const response = await fetch(`${BASE_URL}/daily-log/user/${userId}/date/${date}`, {
+                method: 'GET', 
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to get user log for this date');
+            }
+
+            return data;
+        } catch (err) {
+            setError(err.message);
+            return null;
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+
     /* ══════════════════════════════════════════════
         <REPLACE HEADER>
         ══════════════════════════════════════════════ */
@@ -214,6 +242,7 @@ export const useApi = () => {
         getFamilyLogs,
         getFamilyStreak,
         getUserLogs,
+        getDailyLog,
         isLoading,
         error
     };

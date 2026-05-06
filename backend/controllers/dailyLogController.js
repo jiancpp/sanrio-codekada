@@ -54,6 +54,26 @@ exports.getUserLogs = async (req, res) => {
     }
 }
 
+// Get User's Log for a specific day
+exports.getDailyLog = async (req, res) => {
+    try {
+        const {userId, date } = req.params;
+
+        const log = await DailyLog.findOne({
+            userId: userId,
+            date: date
+        });
+
+        if (!log) {
+            return res.status(200).json(null);
+        }
+
+        res.json(log);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
 exports.getFamilyStreak = async (req, res) => {
     try {
         const { familyCode } = req.params;
