@@ -11,10 +11,18 @@
     "start": "node backend/server.js"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "http": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.6.1",
+    "node-cron": "^4.2.1",
     "react": "^19.2.5",
+    "react-bootstrap-icons": "^1.11.6",
     "react-dom": "^19.2.5",
     "react-router-dom": "^7.14.2",
-    "react-bootstrap-icons": "^1.11.6"
+    "socket.io": "^4.8.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
