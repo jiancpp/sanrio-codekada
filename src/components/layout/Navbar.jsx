@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import NotificationBell from '../ui/NotificationBell';
+
 export const Navbar = ({ variant = "public" }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -65,12 +67,16 @@ export const Navbar = ({ variant = "public" }) => {
             </div>
 
             {/* Right */}
-            <Link
-              to={userId ? `/profile/${userId}` : "/profile"}
-              className="bg-midnight text-egg px-5 py-2 rounded-full text-sm font-bold"
-            >
-              Profile
-            </Link>
+            <div className="flex items-center gap-3">
+              <NotificationBell />
+              <Link
+                to="/profile"
+                className="bg-midnight text-egg px-5 py-2 rounded-full text-sm font-bold"
+              >
+                Profile
+              </Link>
+
+            </div>
 
           </nav>
         </div>
