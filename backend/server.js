@@ -60,5 +60,20 @@ initCronJobs();
 // Export 'io' globally
 app.set('io', io);
 
+const path = require('path');
+if (process.env.NODE_ENV === 'production') {
+  // Serve static files from the 'dist' folder
+  app.use(express.static(path.join(__dirname, '../dist')));
+
+  // Catch-all route to serve index.html
+  app.get('(.*)', (req, res) => {
+    res.sendFile(path.join(__dirname, '../dist', 'index.html'));
+  });
+} else {
+  app.get('/', (req, res) => {
+    res.send('API is running in development mode...');
+  });
+}
+
 const PORT = process.env.PORT || 5001;
 server.listen(PORT, () => console.log(`Server on port ${PORT}`));
