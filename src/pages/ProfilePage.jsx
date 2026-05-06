@@ -2,7 +2,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ProfileHero } from '../features/profile/ProfileHero';
 import { Field, TagList, MedList } from '../features/profile/ProfileFields';
+
+import Navbar from "../components/layout/Navbar";
 import Footer from '../components/layout/Footer';
+
 import { getAge } from '../hooks/utils';
 import { BASE_URL } from '../hooks/constants';
 
@@ -157,7 +160,8 @@ export default function ProfilePage() {
   // ================= UI ================= //
   return (
     <div className="min-h-screen bg-egg text-midnight">
-      <main className="max-w-3xl mx-auto px-6 py-10">
+      <Navbar variant="auth" />
+      <main className="max-w-3xl mx-auto px-6 py-10 pt-30">
 
         <ProfileHero
           p={p}
