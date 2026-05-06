@@ -23,7 +23,7 @@ export const useAuth = () => {
             }
 
             // --- The "Remember Me" Logic ---
-            if (rememberMe) {
+            if (!rememberMe) {
                 localStorage.setItem('token', data.token); // Persistent
                 localStorage.setItem('user', JSON.stringify(data.user)); 
             } else {
