@@ -11,6 +11,7 @@ export const DailyLogPanel = ({ member }) => {
    * 
    *  check which day
    */
+  const { addLog, error, isLoading} = useApi();
   const { 
     mediaAttachments, uploading, handleMediaUpload, 
     deleteMedia, resetMedia, setMedia,
@@ -23,7 +24,6 @@ export const DailyLogPanel = ({ member }) => {
 
 
   const [isSaved, setIsSaved] = useState(false);
-  const { error, isLoading } = useApi()
 
   // Forms Data
   // Todo initialize from member's daily log for the day
@@ -40,8 +40,18 @@ export const DailyLogPanel = ({ member }) => {
     return `${med.time?.length}x a day`;
   };
 
-  const handleSave = () => {
-    console.log(weight);
+  const handleSave = async () => {
+    const data = await addLog({
+      vitals: {
+        weight: weight,
+        bloodPressure: bloodPressure,
+        heartRate: heartRate,
+        bloodSugarLevel: bloodSugar,
+      },
+      medsTaken: [],  // fix forms 
+      waterIntake: waterIntake,
+      proofImage: mediaAttachments.url
+    })
 
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 2000);

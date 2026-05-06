@@ -182,3 +182,22 @@ Content-Type: application/json
     "testDate": "2026-05-06T08:00:00Z",
     "findingsSummary": "Cholesterol is slightly elevated compared to last March."
 }
+
+# 
+
+### 1. Create a FULL daily log 
+POST http://localhost:5001/api/daily-log/add
+Content-Type: application/json
+
+{
+    "userId": "{{userId}}", 
+    "familyCode": "{{familyCode}}", 
+    "vitals": {
+        "bloodPressure": "120/80",
+        "bloodSugarLevel": 95,
+        "weight": 75,
+        "heartRate": 72
+    },
+    "waterIntake": 6,
+    "notes": "Feeling great today!"
+}

@@ -186,6 +186,7 @@ export const useApi = () => {
             });
 
             const data = await response.json();
+            console.log(data)
 
             if (!response.ok) {
                 throw new Error(data.error || 'Failed to get family streak');
@@ -194,7 +195,7 @@ export const useApi = () => {
             return data;
         } catch (err) {
             setError(err.message);
-            return null;
+            return 99;
         } finally {
             setIsLoading(false);
         }

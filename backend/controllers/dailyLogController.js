@@ -62,11 +62,16 @@ exports.getFamilyStreak = async (req, res) => {
         if (members.length === 0) {
             return res.status(404).json({ message: "No family members found " });
         }
+        console.log('controller: ' + members.length)
+
+
 
         // Get all members' streaks and find the smallest one
         const streaks = members.map(user => user.streak || 0);
-        const familyStreak = Math.min(...streaks); // ... is the Spread Operator. It's like opening your bag and laying all your stuff on the bed
+        console.log('controller: ' + streaks)
 
+        const familyStreak = Math.min(...streaks); // ... is the Spread Operator. It's like opening your bag and laying all your stuff on the bed
+        console.log('controller: ' + familyStreak)
         res.status(200).json({ familyCode, familyStreak });
     } catch (err) {
         res.status(500).json({ error: err.message });
