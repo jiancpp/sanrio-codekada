@@ -8,9 +8,9 @@ require('dotenv').config();
 
 const initCronJobs = require('./services/cronTasks');
 
-const BASE_URL = import.meta.env.PROD 
-? '/'
-: 'http://localhost:5001/';
+const CLIENT_URL = process.env.NODE_ENV === 'production' 
+  ? process.env.FRONTEND_URL 
+  : 'http://localhost:5173';
 
 const app = express()
 const server = http.createServer(app); // 3. Create the HTTP server
@@ -18,7 +18,7 @@ const server = http.createServer(app); // 3. Create the HTTP server
 // Initialize Socket.io
 const io = new Server(server, {
   cors: {
-    origin: process.env.BASE_URL,
+    origin: CLIENT_URL,
     methods: ["GET", "POST"]
   }
 });
