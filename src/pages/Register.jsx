@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { PersonFill, EnvelopeFill, ShieldLockFill, EyeFill, EyeSlashFill } from 'react-bootstrap-icons';
 import { useApi } from '../hooks/useApi';
+import { useAuth } from '../hooks/useAuth';
+import { useNavigate } from 'react-router';
 
 /* ── Utility ── */
 const generateCode = () => {
@@ -228,7 +230,7 @@ const ChoosePath = ({ onChoose }) => (
 /* ══════════════════════════════════════════════
    STEP 2A — CREATE FAMILY
 ══════════════════════════════════════════════ */
-const CreateFamily = ({ onBack, onSuccess }) => {
+const CreateFamily = ({ onBack, onSuccess, user }) => {
   const [name, setName] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [code, setCode] = useState('');
@@ -315,16 +317,19 @@ const CreateFamily = ({ onBack, onSuccess }) => {
 /* ══════════════════════════════════════════════
    STEP 2B — JOIN FAMILY
 ══════════════════════════════════════════════ */
-const JoinFamily = ({ onBack, onSuccess }) => {
+const JoinFamily = ({ onBack, onSuccess, user }) => {
+  const { joinFamily, error, isLoading } = useApi();
   const [code, setCode] = useState('');
   const [status, setStatus] = useState('idle');
   const [familyName, setFamilyName] = useState('');
 
-  const handleLookup = (e) => {
+  const handleLookup =  (e) => {
     e.preventDefault();
     setStatus('loading');
-    setTimeout(() => {
-      if (code.length >= 8) { setFamilyName('Reyes Family'); setStatus('found'); }
+    setTimeout(async () => {
+      const family = await joinFamily({ familyCode: code, userId: user._id });
+      
+      if (family) { setFamilyName(family.name); setStatus('found'); }
       else setStatus('error');
     }, 1000);
   };
@@ -484,7 +489,11 @@ const LeftPanel = ({ step }) => {
 const RegisterAndSetup = () => {
   // step: 'account' | 'choose' | 'create' | 'join'
   const { register, error, isLoading } = useApi();
+  const { login } = useAuth();
   const [step, setStep] = useState('account');
+  const [user, setUser] = useState(null)
+  const [temp, setTemp] = useState('')
+  const navigate = useNavigate();
 
   // progress index: account=0, family steps=1, done=2
   const progressIndex = step === 'account' ? 0 : 1;
@@ -492,15 +501,25 @@ const RegisterAndSetup = () => {
 
   const handleAccountNext = async (data) => {
     // data has { name, email, password } — pass to your API here
-    const user = await register(data);
+    const newUser = await register(data);
 
-    if (user) {
+    if (newUser) {
+      setUser(newUser);
+      setTemp(data.password);
       setStep('choose');
     }
   };
 
-  const handleSuccess = () => {
-    alert('All done! Redirecting to dashboard...');
+  const handleSuccess = async () => {
+    const loggedInUser = await login({ 
+      email: user.email, 
+      password: temp, 
+    });
+
+    // If login is successful, redirect to dashboard
+    if (loggedInUser) {
+      navigate('/dashboard'); 
+    }
   };
 
   return (
@@ -520,8 +539,8 @@ const RegisterAndSetup = () => {
 
           {step === 'account' && <AccountStep onNext={handleAccountNext} />}
           {step === 'choose'  && <ChoosePath onChoose={setStep} />}
-          {step === 'create'  && <CreateFamily onBack={() => setStep('choose')} onSuccess={handleSuccess} />}
-          {step === 'join'    && <JoinFamily   onBack={() => setStep('choose')} onSuccess={handleSuccess} />}
+          {step === 'create'  && <CreateFamily onBack={() => setStep('choose')} onSuccess={handleSuccess} user={user} />}
+          {step === 'join'    && <JoinFamily   onBack={() => setStep('choose')} onSuccess={handleSuccess} user={user} />}
         </div>
       </div>
     </div>

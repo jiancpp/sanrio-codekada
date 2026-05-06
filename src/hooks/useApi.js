@@ -5,6 +5,9 @@ export const useApi = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    /* ══════════════════════════════════════════════
+        ACCOUNT SETUP FUNCTIONS
+        ══════════════════════════════════════════════ */
     const register = async ({name, email, password}) => {
         setIsLoading(true);
         setError(null);
@@ -32,9 +35,41 @@ export const useApi = () => {
         }
     }
 
+    const joinFamily = async ({ familyCode, userId }) => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const response = await fetch(`${BASE_URL}/family/join`, {
+                method: 'POST',
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ familyCode, userId })
+            })
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Register failed');
+            }
+            
+            return data; // Return user data to the component
+
+        } catch (err) {
+            setError(err.message);
+            return null;
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    /* ══════════════════════════════════════════════
+        <REPLACE HEADER>
+        ══════════════════════════════════════════════ */
+
     return { 
         // Add new API calls here
         register, 
+        joinFamily,
         isLoading, 
         error 
     };   

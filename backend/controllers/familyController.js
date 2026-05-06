@@ -55,7 +55,7 @@ exports.joinFamily = async (req, res) => {
         user.familyCode = familyCode;
         await user.save();
 
-        res.status(200).json({ message: `Welcome to ${family.familyName}`, familyCode});
+        res.status(200).json({ message: `Welcome to ${family.familyName}`, family});
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
