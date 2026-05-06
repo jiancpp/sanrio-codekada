@@ -82,3 +82,21 @@ exports.updateFamilyName = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 }
+
+exports.getFamily = async(req, res) => {
+    try {
+        if (req.user.familyCode !== req.params.code) {
+            return res.status(400).json({ message: 'You are not part of this family' });
+        }
+
+        const family = await Family
+            .findOne({ familyCode: req.params.code })
+            .populate('members', '-password');
+
+        if (!family) return res.status(400).json({ message: 'Family not found!' });
+
+        res.json(family);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}

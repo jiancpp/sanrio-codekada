@@ -1,9 +1,9 @@
 ### Variables
 @token = {{login.response.body.token}}
-@familyId = 69faa6eb8b503120df390e83
-@userId = 69faa5e46f417faba02b1dc9
-@lolaId = 69faa5bf6f417faba02b1dc7
-@familyCode = 485477
+@familyId = 69fadbdadadd05a36047b00e
+@userId = 69fadbb0dadd05a36047b00c
+@lolaId = 69fadb9fdadd05a36047b009
+@familyCode = 485464
 
 # ==========================================
 # USER ROUTES
@@ -16,8 +16,35 @@ Content-Type: application/json
 {
     "email": "jiannaclarisse.tm@gmail.com",
     "name": "Lola Tessie",
+    "password": "SinigangNaBaboy",
+    "role": "Member",
+    "birthdate": "1969-05-04T12:00:00Z", 
+    "bloodType": "B+", 
+    "allergies": ["Peanuts"], 
+    "medicalConditions": [], 
+    "maintenanceMeds": []
+}
+
+### Register User (Manager)
+POST http://localhost:5001/api/users/register
+Content-Type: application/json
+
+{
+    "email": "dobadoba911@gmail.com",
+    "name": "Papa Jason",
+    "password": "SinigangNaBaboy",
     "role": "Manager",
-    "password": "SinigangNaBaboy"
+    "birthdate": "1969-05-04T12:00:00Z", 
+    "bloodType": "B+", 
+    "allergies": ["Peanuts"], 
+    "medicalConditions": ["Diabetes"], 
+    "maintenanceMeds": [
+        {
+            "name": "Metformin", 
+            "days": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"], 
+            "time": []
+        }
+    ]
 }
 
 ### Login (As Manager/Papa)
@@ -31,11 +58,11 @@ Content-Type: application/json
 }
 
 ### Test Get Family Member (Single)
-GET http://localhost:5001/api/users/member/{{userId}}
+GET http://localhost:5001/api/users/get/{{userId}}
 Authorization: Bearer {{token}}
 
 ### Test Get Family Members (All)
-GET http://localhost:5001/api/users/family/TALA2026
+GET http://localhost:5001/api/family/get/{{familyCode}}
 Authorization: Bearer {{token}}
 
 ### Test Update Info

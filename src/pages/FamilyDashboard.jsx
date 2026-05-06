@@ -1,9 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MemberCard } from '../features/dashboard/MemberCard';
 import { QuickAction } from '../features/dashboard/QuickAction';
 import { DailyLogPanel } from '../features/dashboard/DailyLogPanel'; // Ensure these are separate
 import { FamilyStreakPanel } from '../features/dashboard/FamilyStreakPanel';
 import Footer from '../components/layout/Footer';
+
+import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from '../hooks/constants';
+import { getAge } from '../hooks/utils';
 
 // Sample Data
 const MEMBERS = [
@@ -50,15 +54,73 @@ const MEMBERS = [
 ];
 
 export default function FamilyDashboard() {
-  const [selected, setSelected] = useState(MEMBERS[0]);
+  // =========== Frontend Variables ================== //
+  
+  const [selected, setSelected] = useState(null);
   const [activeTab, setActiveTab] = useState("log"); // 'log' or 'streak'
   const [copied, setCopied] = useState(false);
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText("https://talacare.app/join/reyes-family-771");
+    navigator.clipboard.writeText(`https://talacare.app/family/join/${family?.familyCode}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  // =========== Backend connection ================== //
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [family, setFamily] = useState(null);
+  const [members, setMembers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // to prevent page crash
+
+  useEffect (() => {
+    const storedUserString = localStorage.getItem('user') || sessionStorage.getItem('user');
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+
+    if (storedUserString) {
+      const parsedUser = JSON.parse(storedUserString);
+      setUser(parsedUser);
+
+      const fetchMembers = async () => {
+        try {
+          const response = await fetch(`${BASE_URL}/family/get/${parsedUser.familyCode}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}` // Security key
+            }
+          });
+
+          // Unpack the JSON data
+          const data = await response.json();
+
+          if (response.ok) {
+            const updatedMembers = data.members.map(member => ({
+              ...member,
+              age: getAge(new Date(member.birthdate)) || 'N/A',
+              initial: member.name.slice(0, 2).toUpperCase()
+            }));
+
+            setFamily(data);
+            setMembers(updatedMembers);
+            setSelected(updatedMembers[0]);
+            console.log(updatedMembers)
+          } else {
+            console.error("Backend error:", data.message);
+          }
+
+        } catch (error) {
+          console.error("Network error:", error);
+        } finally {
+          setIsLoading(false); // Stop the loading spinner
+        }
+      }
+      fetchMembers();
+
+    } else {
+      navigate('/login')
+    }
+  }, [navigate])
 
   return (
     <div className="min-h-screen bg-egg text-midnight">
@@ -66,7 +128,7 @@ export default function FamilyDashboard() {
       <header className="max-w-6xl mx-auto px-6 pt-10 pb-6 flex justify-between items-end">
         <div>
           <h1 className="font-display font-black text-3xl tracking-tight uppercase">Family Dashboard</h1>
-          <p className="text-sm text-gray-400 font-medium italic">Subtitle</p>
+          <p className="text-sm text-gray-400 font-medium italic">{family?.familyName}</p>
         </div>
         
         <button 
@@ -84,11 +146,11 @@ export default function FamilyDashboard() {
         
         {/* Left: Members Grid */}
         <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-4 auto-rows-min">
-          {MEMBERS.map((member) => (
+          {members.map((member) => (
             <MemberCard 
-              key={member.id} 
+              key={member._id} 
               member={member} 
-              selected={selected?.id === member.id}
+              selected={selected?._id === member._id}
               onClick={setSelected}
             />
           ))}
@@ -120,7 +182,7 @@ export default function FamilyDashboard() {
             {/* Tab Content */}
             <div className="p-6 overflow-y-auto max-h-[500px]">
               {activeTab === "streak" ? (
-                <FamilyStreakPanel members={MEMBERS} />
+                <FamilyStreakPanel members={members} />
               ) : (
                 <DailyLogPanel member={selected} />
               )}
@@ -139,7 +201,7 @@ export default function FamilyDashboard() {
               title="Medication Schedule" 
               icon="💊" 
               colorClass="bg-coral-light" 
-              sub={`${MEMBERS.filter(m => !m.loggedToday).length} members pending logs`} 
+              sub={`${members.filter(m => !m.loggedToday).length} members pending logs`} 
             />
             <QuickAction 
               title="Emergency Info" 

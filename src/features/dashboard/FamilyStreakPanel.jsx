@@ -58,7 +58,7 @@ export const FamilyStreakPanel = ({ members }) => {
             const progress = Math.min(100, (m.streak / 14) * 100);
             
             return (
-              <div key={m.id} className="flex items-center gap-4">
+              <div key={m._id} className="flex items-center gap-4">
                 <Avatar initial={m.initial} type={m.type} size="size-8" />
                 <div className="flex-1">
                   <div className="flex justify-between items-end mb-1.5">

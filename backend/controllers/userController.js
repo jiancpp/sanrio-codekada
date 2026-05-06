@@ -42,21 +42,6 @@ exports.getMemberInfo = async(req, res) => {
     }
 }
 
-/**
- * GET - Get all family members
- * 
- * @param {*} req 
- * @param {*} res
- */
-exports.getFamily = async(req, res) => {
-    try {
-        const members = await User.find({ familyCode: req.params.code });
-        res.json(members);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-}
-
 /************************* Functions ****************************/
 
 /**
@@ -67,11 +52,21 @@ exports.getFamily = async(req, res) => {
  */
 exports.loginUser = async(req, res) => {
     try {
-        // const { name, familyCode, password } = req.body;
-        // const user = await User.findOne({ name, familyCode });
+        const { email, name, familyCode, password } = req.body;
+        let user;
 
-        const { email, password } = req.body;
-        const user = await User.findOne({ email });
+        // Find user by Email (for Guardians)
+        if (email) {
+            user = await User.findOne({ email: email.toLowerCase() });
+        } 
+
+        // Find user by Name + FamilyCode (for Kids/Members)
+        else if (name && familyCode) {
+            user = await User.findOne({ 
+                name: name, 
+                familyCode: familyCode.toUpperCase() 
+            });
+        }
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });

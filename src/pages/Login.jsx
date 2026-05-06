@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import { PeopleFill, GlobeAmericas, HeartFill, ShieldLockFill, EyeFill, EyeSlashFill, PersonFill } from 'react-bootstrap-icons';
+import { useAuth } from '../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  // Backend Connection
+  const { login, error, isLoading } = useAuth();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    name: '',
+    email: '',
     password: '',
     confirmPassword: ''
   });
@@ -14,9 +20,19 @@ const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
+
+    const user = await login({ 
+      email: formData.email, 
+      password: formData.password 
+    });
+
+    // If login is successful, redirect to dashboard
+    if (user) {
+      navigate('/dashboard'); 
+    }
   };
 
   return (
@@ -88,18 +104,23 @@ const Login = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            {error && (
+                <div className="mb-4 p-3 bg-coral text-white text-sm rounded-lg text-center">
+                    {error}
+                </div>
+            )}
 
             {/* Full Name */}
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="name" className="font-semibold text-sm text-midnight">Full Name</label>
+              <label htmlFor="email" className="font-semibold text-sm text-midnight">Email</label>
               <div className="relative flex items-center">
                 <span className="absolute left-4 text-mauve pointer-events-none"><PersonFill/></span>
                 <input
-                  type="text"
-                  id="name"
-                  name="name"
+                  type="email"
+                  id="email"
+                  name="email"
                   placeholder="Enter your full name"
-                  value={formData.name}
+                  value={formData.email}
                   onChange={handleChange}
                   required
                   className="w-full pl-11 pr-4 py-3.5 border-2 border-olive-light rounded-[0.875rem] text-[0.9375rem] text-midnight bg-white placeholder-[#b0b0b0] transition-all focus:outline-none focus:border-olive focus:shadow-[0_0_0_3px_rgba(115,138,119,0.15)]"
@@ -135,6 +156,7 @@ const Login = () => {
             {/* Submit */}
             <button
               type="submit"
+              disabled={isLoading}
               className="w-full py-4 bg-midnight text-egg rounded-full font-bold text-[0.9375rem] border-none cursor-pointer transition-all mt-1 hover:bg-mauve hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(26,26,46,0.25)]"
             >
               Login

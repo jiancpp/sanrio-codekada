@@ -25,14 +25,8 @@ const UserSchema = new mongoose.Schema({
         time: [String]
     }],
 
-    // Med Archive
-    labTests: {
-        type: [mongoose.Schema.Types.ObjectId],
-        default: []
-    },
-
-    currentStreak: { type: Number, default: 0 },
-    lastLogDate: { type: Date, default: null },
+    streak: { type: Number, default: 0 },
+    loggedToday: { type: Boolean, default: false },
     finishedAccountSetup: { type: Boolean, default: false }
 });
 

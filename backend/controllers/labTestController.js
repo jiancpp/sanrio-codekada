@@ -15,11 +15,6 @@ exports.createLabTest = async (req, res) => {
         });
 
         const savedTest = await newTest.save();
-
-        await User.findByIdAndUpdate(member, {
-            $push: { labTests: savedTest._id }
-        });
-
         res.status(201).json(savedTest);
     } catch (error) {
         res.status(500).json({ message: "Error saving lab test", error: error.message });
