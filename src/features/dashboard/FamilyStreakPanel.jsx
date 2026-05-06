@@ -1,11 +1,34 @@
+import { useEffect, useState } from "react";
 import { Avatar } from "../../components/ui/Avatar";
+import { useApi } from "../../hooks/useApi";
+import { useNavigate } from "react-router";
 
 const STREAK_DAYS = ["M", "T", "W", "T", "F", "S", "S"];
-const FAMILY_STREAK_COUNT = 7;
 
 export const FamilyStreakPanel = ({ members }) => {
+  const { getFamilyLogs, getFamilyStreak, error, isLoading} = useApi();
+  const [familyStreak, setFamilyStreak] = useState(0);
+  const navigate = useNavigate()
+  
   const today = new Date().getDay(); // 0 = Sun
   const dayIdx = today === 0 ? 6 : today - 1; // Adjust to Mon=0
+
+  useEffect(() => {
+    const storedUserString = localStorage.getItem('user') || sessionStorage.getItem('user');
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+
+    if (!storedUserString) {
+      navigate('/login');
+    }
+    const parsedUser = JSON.parse(storedUserString);
+    const fetchFamilyStreak = async () => {
+      const data = await getFamilyStreak(parsedUser.familyCode);
+      console.log(data.familyStreak)
+      setFamilyStreak(data.familyStreak);
+    }
+    fetchFamilyStreak();
+
+  }, [navigate])
 
   return (
     <div className="flex flex-col gap-6">
@@ -13,7 +36,7 @@ export const FamilyStreakPanel = ({ members }) => {
       <div className="flex justify-between items-center bg-olive-light/30 p-4 rounded-2xl border border-olive-light">
         <div>
           <p className="font-display font-black text-2xl text-midnight tracking-tight">
-            🔥 {FAMILY_STREAK_COUNT} DAYS
+            🔥 {familyStreak} DAYS
           </p>
           <p className="text-[10px] uppercase font-bold text-olive-dark/60 tracking-widest">
             Family Consistency

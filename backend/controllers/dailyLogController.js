@@ -4,28 +4,26 @@ const User = require('../models/User');
 // Create a new daily log and update streak
 exports.createLog = async (req, res) => {
     try {
-        const { userId, familyCode } = req.body;
+        const { userId } = req.body;
         const today = new Date().toISOString().split('T')[0];
 
         // Look for user's log today -> update if log exists | create if not
         const log = await DailyLog.findOneAndUpdate(
             { userId, date: today },
-            { $set: req.body },
-            { upsert: true, new: true, runValidators: true }
+            { $set: { ...req.body, date: today } },
+            { upsert: true, new: true, runValidators: true, rawResult: true }
         );
 
-        // Log was just created if createdAt matches updatedAt
-        const isNewLog = log.createdAt.getTime() === log.updatedAt.getTime();
-        if (isNewLog) {
+        if (!log.lastErrorObject.updatedExisting) {
             const user = await User.findById(userId);
-
+            
             if (user) {
-                user.streak++;
+                user.streak = (user.streak || 0) + 1;
                 await user.save();
             }
         }
 
-        res.status(200).json(log);
+        res.status(200).json(log.value);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -56,6 +54,26 @@ exports.getUserLogs = async (req, res) => {
     }
 }
 
+// Get User's Log for a specific day
+exports.getDailyLog = async (req, res) => {
+    try {
+        const {userId, date } = req.params;
+
+        const log = await DailyLog.findOne({
+            userId: userId,
+            date: date
+        });
+
+        if (!log) {
+            return res.status(200).json(null);
+        }
+
+        res.json(log);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
 exports.getFamilyStreak = async (req, res) => {
     try {
         const { familyCode } = req.params;
@@ -64,11 +82,16 @@ exports.getFamilyStreak = async (req, res) => {
         if (members.length === 0) {
             return res.status(404).json({ message: "No family members found " });
         }
+        console.log('controller: ' + members.length)
+
+
 
         // Get all members' streaks and find the smallest one
-        const streaks = members.map(user => user.currentStreak || 0);
-        const familyStreak = Math.min(...streaks); // ... is the Spread Operator. It's like opening your bag and laying all your stuff on the bed
+        const streaks = members.map(user => user.streak || 0);
+        console.log('controller: ' + streaks)
 
+        const familyStreak = Math.min(...streaks); // ... is the Spread Operator. It's like opening your bag and laying all your stuff on the bed
+        console.log('controller: ' + familyStreak)
         res.status(200).json({ familyCode, familyStreak });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -79,14 +102,14 @@ exports.getFamilyStreak = async (req, res) => {
 exports.getLogsByMonth = async (req, res) => {
     try {
         const { userId, year, month } = req.params;
-        const startDate = new Date(year, month - 1, 1); // Months starts at 0
-        const endDate = new Date(year, month, 0, 23, 59, 59); // Day 0 of the next month = Last day of month - 1, 23:59:59 is time
+
+        const formattedMonth = month.padStart(2, '0');
+        const searchPattern = new RegExp(`^${year}-${formattedMonth}`);
 
         const logs = await DailyLog.find({
             userId,
             date: {
-                $gte: startDate,    // Greater than or equal to
-                $lte: endDate   // Less than or equal to
+                $regex: searchPattern
             }
         }).sort({ date: 1 }); // Sort by oldest to newest
 
