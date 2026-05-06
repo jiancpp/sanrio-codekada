@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const constants = require('../constants')
+
 
 const LabTestSchema = new mongoose.Schema({
     familyCode: {
@@ -11,9 +13,18 @@ const LabTestSchema = new mongoose.Schema({
         required: true,
     },
     attachments: [String],
-    testName: String,
+    testName: { 
+        type: String, 
+        enum: constants.testNames 
+    },    
     testDate: { type: Date, default: Date.now },
-    notes: String
+    items: [{
+        name: String,   // e.g., "LDL Cholesterol"
+        result: Number, // e.g., 130
+        unit: String,   // e.g., "mg/dL"
+        referenceRange: String // e.g., "<100" (Optional but helpful)
+    }],
+    findingsSummary: String
 })
 
 module.exports = mongoose.model("LabTest", LabTestSchema);

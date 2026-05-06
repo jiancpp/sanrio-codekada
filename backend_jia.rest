@@ -71,32 +71,6 @@ Authorization: Bearer {{token}}
     "name": "Lola Tessie"
 }
 
-### Test Notify Member
-POST http://localhost:5001/api/notifications/notify-member
-x-system-key: your_super_secret_key_here
-Content-Type: application/json
-
-{
-    "familyCode": "TALA2026",
-    "member": "69fa0a3f382914c64efbdbbc",
-    "message": "Testing"
-}
-
-### Test Notify Family
-POST  http://localhost:5001/api/notifications/notify-family
-x-system-key: your_super_secret_key_here
-Content-Type: application/json
-
-{
-  "familyCode": "TALA2026",
-  "message": "Time for Lola's 10 PM medicine!"
-}
-
-### Test Remove Notification
-DELETE  http://localhost:5001/api/notifications/delete/69fa19354c422e9db73c6bd1
-Authorization: Bearer {{token}}
-
-
 ### Create a Lab Test
 POST http://localhost:5001/api/lab-tests/add
 Content-Type: application/json
@@ -118,4 +92,33 @@ Authorization: Bearer {{token}}
 ### Get Family Tests
 GET http://localhost:5001/api/lab-tests/family/TALA2026
 Authorization: Bearer {{token}}
+
+
+# ========= SYSTEM ROUTES ===========
+### Test Notify Member
+POST http://localhost:5001/api/system/notify-member
+x-system-key: your_super_secret_key_here
+Content-Type: application/json
+
+{
+    "familyCode": "TALA2026",
+    "member": "69fa0a3f382914c64efbdbbc",
+    "message": "Testing"
+}
+
+### Test Notify Family
+POST  http://localhost:5001/api/system/notify-family
+x-system-key: your_super_secret_key_here
+Content-Type: application/json
+
+{
+  "familyCode": "TALA2026",
+  "message": "Time for Lola's 10 PM medicine!"
+}
+
+### Test Remove Notification
+DELETE  http://localhost:5001/api/system/delete/69fa19354c422e9db73c6bd1
+Authorization: Bearer {{token}}
+
+
 
