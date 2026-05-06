@@ -14,19 +14,28 @@ const Notification = require('../models/Notification');
  */
 const initCronJobs = () => {
     // Streak reset at 00:00 (Midnight)
-    cron.schedule('*/3 * * * *', async () => {
-        // const io = getIO(); // No 'req' needed!
-        console.log('Running midnight streak reset...');
+    cron.schedule('* * * * *', async () => {
+        const now = new Date();
+        console.log(`[${now.toISOString()}] Cron Heartbeat: Starting streak reset...`);
         
         try {
-            // Find users who didn't log anything the day before
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
+            const manilaTime = new Intl.DateTimeFormat('en-US', {
+                timeZone: 'Asia/Manila',
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric'
+            }).format(new Date());
+            
+            const todayPH = new Date(manilaTime);
+            todayPH.setHours(0, 0, 0, 0);
 
-            await User.updateMany(
-                { lastLogDate: { $lt: today } },   // $lt checks if lastLogDate is less than today
-                { $set: { currentStreak: 0 } }     // reset streak
+            console.log(`Checking for logs before: ${todayPH.toISOString()}`);
+
+            const result = await User.updateMany(
+                { lastLogDate: { $lt: todayPH } },
+                { $set: { currentStreak: 0 } }
             );
+
             console.log('Streaks updated successfully.');
         } catch (err) {
             console.error('Error in cron job:', err);
