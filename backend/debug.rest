@@ -14,7 +14,7 @@ POST http://localhost:5001/api/users/register
 Content-Type: application/json
 
 {
-    "email": "jiannaclarisse.tm@gmail.com",
+    "email": "reyes.lola@gmail.com",
     "name": "Lola Tessie",
     "password": "SinigangNaBaboy",
     "role": "Member",
@@ -30,7 +30,7 @@ POST http://localhost:5001/api/users/register
 Content-Type: application/json
 
 {
-    "email": "dobadoba911@gmail.com",
+    "email": "reyes.papa@gmail.com",
     "name": "Papa Jason",
     "password": "SinigangNaBaboy",
     "role": "Manager",
@@ -53,7 +53,7 @@ POST http://localhost:5001/api/users/login
 Content-Type: application/json
 
 {
-    "email": "dobadoba911@gmail.com",
+    "email": "reyes.papa@gmail.com",
     "password": "SinigangNaBaboy"
 }
 
@@ -183,14 +183,16 @@ Content-Type: application/json
     "findingsSummary": "Cholesterol is slightly elevated compared to last March."
 }
 
-# 
+# ==========================================
+# DAILY LOG
+# ==========================================
 
 ### 1. Create a FULL daily log 
 POST http://localhost:5001/api/daily-log/add
 Content-Type: application/json
 
 {
-    "userId": "{{userId}}", 
+    "userId": "{{lolaId}}", 
     "familyCode": "{{familyCode}}", 
     "vitals": {
         "bloodPressure": "120/80",
@@ -199,5 +201,5 @@ Content-Type: application/json
         "heartRate": 72
     },
     "waterIntake": 6,
-    "notes": "Feeling great today!"
+    "notes": "Feeling great great today!"
 }

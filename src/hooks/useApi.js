@@ -119,12 +119,15 @@ export const useApi = () => {
         }
     }
 
-    const getFamilyLogs = async (familyCode) => {
+    const getFamilyLogs = async (familyCode, params = {}) => {
         setIsLoading(true);
         setError(null);
 
         try {
-            const response = await fetch(`${BASE_URL}/daily-log/family/${familyCode}`, {
+            const queryString = Object.keys(params).length 
+                ? '?' + new URLSearchParams(params).toString() 
+                : '';
+            const response = await fetch(`${BASE_URL}/daily-log/family/${familyCode}${queryString}`, {
                 method: 'GET', 
                 headers: {
                     'Content-Type': 'application/json'
@@ -195,7 +198,7 @@ export const useApi = () => {
             return data;
         } catch (err) {
             setError(err.message);
-            return 99;
+            return 0;
         } finally {
             setIsLoading(false);
         }

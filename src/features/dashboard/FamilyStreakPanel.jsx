@@ -2,17 +2,58 @@ import { useEffect, useState } from "react";
 import { Avatar } from "../../components/ui/Avatar";
 import { useApi } from "../../hooks/useApi";
 import { useNavigate } from "react-router";
+import { toPHDate, getMonday, formatLocalDate } from "../../hooks/utils";
 
 const STREAK_DAYS = ["M", "T", "W", "T", "F", "S", "S"];
+
+const getLoggedDays = (logs, weekStart) => {
+  if (!weekStart || isNaN(new Date(weekStart))) return [];
+
+  const monday = getMonday(weekStart);
+  const loggedDays = [];
+
+  for (let i = 0; i < 7; i++) {
+    const currentDay = new Date(monday);
+    currentDay.setDate(monday.getDate() + i);
+
+    const dateString = formatLocalDate(currentDay);
+    const hasLog = logs?.some(log => {
+      const rawDate = log.createdAt;
+      if (!rawDate) return false;
+
+      const logDate = toPHDate(rawDate);
+      return logDate === dateString;
+    });
+
+    if (hasLog) {
+      loggedDays.push(i); // Monday = 0
+    }
+  }
+
+  return loggedDays;
+};
 
 export const FamilyStreakPanel = ({ members }) => {
   const { getFamilyLogs, getFamilyStreak, error, isLoading} = useApi();
   const [familyStreak, setFamilyStreak] = useState(0);
+  // const [familyLogs, setFamilyLogs] = useState([]);
+  const [loggedDays, setLoggedDays] = useState([])
   const navigate = useNavigate()
   
-  const today = new Date().getDay(); // 0 = Sun
-  const dayIdx = today === 0 ? 6 : today - 1; // Adjust to Mon=0
+  const now = new Date();
 
+  // Monday-based index (Mon=0)
+  const today = now.getDay();
+  const dayIdx = today === 0 ? 6 : today - 1;
+  
+  const weekStart = new Date(now);
+  weekStart.setDate(now.getDate() - dayIdx);
+  weekStart.setHours(0, 0, 0, 0);
+  
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekStart.getDate() + 6);
+  weekEnd.setHours(23, 59, 59, 999); 
+  
   useEffect(() => {
     const storedUserString = localStorage.getItem('user') || sessionStorage.getItem('user');
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
@@ -22,9 +63,14 @@ export const FamilyStreakPanel = ({ members }) => {
     }
     const parsedUser = JSON.parse(storedUserString);
     const fetchFamilyStreak = async () => {
-      const data = await getFamilyStreak(parsedUser.familyCode);
-      console.log(data.familyStreak)
-      setFamilyStreak(data.familyStreak);
+      const [streakData, logsData] = await Promise.all([
+        getFamilyStreak(parsedUser.familyCode),
+        getFamilyLogs(parsedUser.familyCode, {weekStart, weekEnd})
+      ]);
+
+      setFamilyStreak(streakData.familyStreak);
+      // setFamilyLogs(logsData);
+      setLoggedDays(getLoggedDays(logsData, weekStart))
     }
     fetchFamilyStreak();
 
@@ -57,13 +103,13 @@ export const FamilyStreakPanel = ({ members }) => {
             <div key={i} className="flex flex-col items-center gap-2 flex-1">
               <div
                 className={`size-8 rounded-xl flex items-center justify-center font-display font-black text-xs transition-all
-                ${i < dayIdx 
+                ${loggedDays.includes(i)
                   ? "bg-olive text-egg" 
                   : i === dayIdx 
                     ? "bg-white border-2 border-olive text-olive shadow-sm" 
                     : "bg-egg/50 text-gray-300"}`}
               >
-                {i < dayIdx ? "✓" : day}
+                {loggedDays.includes(i) ? "✓" : day}
               </div>
             </div>
           ))}

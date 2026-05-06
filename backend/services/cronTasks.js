@@ -31,6 +31,9 @@ const initCronJobs = () => {
         } catch (err) {
             console.error('Error in cron job:', err);
         }
+    }, {
+        scheduled: true,
+        timezone: "Asia/Manila" // This forces PH time
     });
 
     // Notify about Monthly Summary on 12:00 AM on the 1st of every month
