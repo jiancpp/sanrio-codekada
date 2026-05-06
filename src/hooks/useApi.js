@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { BASE_URL } from './constants';
 
-export const useRoutes = () => {
+export const useApi = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const register = async (name, email, password) => {
+    const register = async ({name, email, password}) => {
         setIsLoading(true);
         setError(null);
 
@@ -22,13 +22,13 @@ export const useRoutes = () => {
                 throw new Error(data.message || 'Register failed');
             }
             
-            setIsLoading(false);
-            return data.user; // Return user data to the component
+            return data; // Return user data to the component
 
         } catch (err) {
             setError(err.message);
-            setIsLoading(false);
             return null;
+        } finally {
+            setIsLoading(false);
         }
     }
 

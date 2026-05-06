@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { PersonFill, EnvelopeFill, ShieldLockFill, EyeFill, EyeSlashFill } from 'react-bootstrap-icons';
+import { useApi } from '../hooks/useApi';
 
 /* ── Utility ── */
 const generateCode = () => {
@@ -482,15 +483,20 @@ const LeftPanel = ({ step }) => {
 ══════════════════════════════════════════════ */
 const RegisterAndSetup = () => {
   // step: 'account' | 'choose' | 'create' | 'join'
+  const { register, error, isLoading } = useApi();
   const [step, setStep] = useState('account');
 
   // progress index: account=0, family steps=1, done=2
   const progressIndex = step === 'account' ? 0 : 1;
   const showProgress = true;
 
-  const handleAccountNext = (data) => {
+  const handleAccountNext = async (data) => {
     // data has { name, email, password } — pass to your API here
-    setStep('choose');
+    const user = await register(data);
+
+    if (user) {
+      setStep('choose');
+    }
   };
 
   const handleSuccess = () => {
