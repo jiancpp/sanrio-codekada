@@ -23,6 +23,7 @@ const DailyLogSchema = new mongoose.Schema({
     medsTaken: [{
         _id: false,
         name: String,
+        time: String,
         status: {
             type: Boolean,
             default: false

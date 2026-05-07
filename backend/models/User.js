@@ -22,9 +22,11 @@ const UserSchema = new mongoose.Schema({
     maintenanceMeds: [{
         name: String, 
         days: { type: [String], enum: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']},
-        time: [String]
+        time: [String],
+        notes: { type: String, default: 'As prescribed'}
     }],
 
+    avatar: { type: String, enum: ['olive', 'jasmine', 'coral', 'mauve'], default: 'olive'},
     streak: { type: Number, default: 0 },
     loggedToday: { type: Boolean, default: false },
     lastLogDate: { type: Date, default: null },
