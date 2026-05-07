@@ -5,8 +5,10 @@ import logo from '../../assets/logo.png';
 import { HiOutlineLogout } from "react-icons/hi";
 
 import NotificationBell from '../ui/NotificationBell';
+import { useAuth } from '../../hooks/useAuth';
 
 export const Navbar = ({ variant = "public" }) => {
+  const { logout } = useAuth();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -14,6 +16,11 @@ export const Navbar = ({ variant = "public" }) => {
   const stored = localStorage.getItem('user') || sessionStorage.getItem('user');
   const user = stored ? JSON.parse(stored) : null;
   const userId = user?.id;
+
+  const handleLogOut = () => {
+    logout();
+    navigate('/')
+  }
   return (
     <>
       {/* ================= PUBLIC NAVBAR ================= */}
@@ -94,7 +101,7 @@ export const Navbar = ({ variant = "public" }) => {
               </Link>
               <NotificationBell />
               <button
-                // onClick={}
+                onClick={(e) => handleLogOut()}
                 className="relative bg-egg border border-olive-light rounded-full p-2 shadow-sm hover:shadow-md transition"
               >
                 <HiOutlineLogout className="w-5 h-5" />
