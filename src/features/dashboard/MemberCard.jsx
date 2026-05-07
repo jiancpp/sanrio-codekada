@@ -82,7 +82,7 @@ const WaterTracker = ({ glasses = 0 }) => {
       <div className="flex gap-[3px] items-end">
         {Array.from({ length: TOTAL }, (_, i) => (
           <svg key={i} width="9" height="14" viewBox="0 0 9 14">
-            <path d="M1.5 1 L0.5 12 Q0.5 13 1.5 13 L7.5 13 Q8.5 13 8.5 12 L7.5 1 Z"
+            <path d="M0.5 1 L1.5 12 Q1.5 13 2.5 13 L6.5 13 Q7.5 13 7.5 12 L8.5 1 Z"
               fill={i < glasses ? '#7BA7BC' : 'rgba(120,160,185,0.18)'}
               stroke={i < glasses ? '#5a8fa8' : 'rgba(120,160,185,0.3)'}
               strokeWidth="0.6"
