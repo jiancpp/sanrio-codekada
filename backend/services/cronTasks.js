@@ -20,13 +20,13 @@ const initCronJobs = () => {
         console.log(`[${now.toISOString()}] Cron Heartbeat: Starting streak reset...`);
         
         try {
-            // Calculate the 24-hour window from right now (10:30 AM)
+            // Calculate the 24-hour window from right now (12:00 AM)
             const twentyFourHoursAgo = new Date(now.getTime() - (24 * 60 * 60 * 1000));
             console.log(twentyFourHoursAgo)
     
             // Find IDs of users who DID submit a log in the last 24 hours
             const activeUsers = await DailyLog.distinct('userId', {
-                createdAt: { $gte: twentyFourHoursAgo }
+                date: { $gte: twentyFourHoursAgo }
             });
     
             // Reset streaks for users who are NOT in the active list

@@ -133,7 +133,7 @@ Join my family using this code: ${family?.familyCode}
 
   // NOT YET TESTED
   const handleNudge = async (memberNudged) => {
-    if (memberNudged?.loggedToday) return;
+    // if (memberNudged?.loggedToday) return;   Allow nudge even if user has logged
     if (memberNudged?._id === user?._id) return;
     
     console.log(user);
@@ -243,7 +243,6 @@ Join my family using this code: ${family?.familyCode}
               sub={`${members.filter(m => !m.loggedToday).length} members pending logs`} 
             />
             <QuickAction 
-              onClick={() => navigate("/emergency")}
               title="Emergency Info" 
               icon="🆘" 
               colorClass="bg-coral-light" 

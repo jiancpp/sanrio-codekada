@@ -10,19 +10,24 @@ const getLoggedDays = (logs, weekStart) => {
   if (!weekStart || isNaN(new Date(weekStart))) return [];
 
   const monday = getMonday(weekStart);
+  monday.setHours(0, 0, 0, 0);
+
   const loggedDays = [];
+
+  const normalize = (date) => {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    return d.getTime();
+  };
 
   for (let i = 0; i < 7; i++) {
     const currentDay = new Date(monday);
     currentDay.setDate(monday.getDate() + i);
+    currentDay.setHours(0, 0, 0, 0);
 
-    const dateString = formatLocalDate(currentDay);
-    const hasLog = logs?.some(log => {
-      const rawDate = log.createdAt;
-      if (!rawDate) return false;
-
-      const logDate = toPHDate(rawDate);
-      return logDate === dateString;
+    const hasLog = logs?.some((log) => {
+      if (!log.date) return false;
+      return normalize(log.date) === currentDay.getTime();
     });
 
     if (hasLog) {
