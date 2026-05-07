@@ -25,3 +25,6 @@ dist-ssr
 
 # Database
 .env
+*.rest
+populate.js
+bin.js

@@ -15,8 +15,8 @@ const UserSchema = new mongoose.Schema({
     },
 
     // Medical Info filled in 
-    birthdate: Date,
-    bloodType: String,
+    birthdate: { type: Date, default: new Date()},
+    bloodType: { type: String, default: '' },
     allergies: { type: [String], default: [] },
     medicalConditions: { type: [String], default: [] },
     maintenanceMeds: [{
