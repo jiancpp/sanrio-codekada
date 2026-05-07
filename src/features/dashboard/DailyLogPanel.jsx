@@ -45,7 +45,7 @@ export const DailyLogPanel = ({ member }) => {
         const medStatus = {};
   
         existingLog.medsTaken?.forEach(med => {
-          medStatus[med.name] = med.status;
+          medStatus[`${med.name}-${med.time}`] = med.status;
         });
   
         setCheckedMeds(medStatus);
@@ -76,18 +76,16 @@ export const DailyLogPanel = ({ member }) => {
     };
   }, [member?._id]);
 
-  // Logic for scheduling meds (Sample data)
-  const medSchedule = (med) => {
-    if (med.day?.length !== 7) return null;
-    if (med.time?.length === 0) return 'Every day';
-    return `${med.time?.length}x a day`;
-  };
-
   const handleSave = async () => {
-    const medsArray = Object.keys(checkedMeds).map(name => ({
-      name: name,
-      status: checkedMeds[name]
-    }));
+    const medsArray = Object.entries(checkedMeds).map(([key, status]) => {
+      const [name, time] = key.split("-");
+    
+      return {
+        name,
+        time,
+        status
+      };
+    });
 
     const data = await addLog({
       userId: member._id,
@@ -98,7 +96,7 @@ export const DailyLogPanel = ({ member }) => {
         heartRate: heartRate,
         bloodSugarLevel: bloodSugar,
       },
-      medsTaken: medsArray,  // fix forms 
+      medsTaken: medsArray,
       waterIntake: waterIntake,
       proofImage: mediaAttachments?.url || ""
     })
@@ -144,7 +142,7 @@ export const DailyLogPanel = ({ member }) => {
         </div>
 
         <div className="space-y-2">
-          {member.maintenanceMeds?.map((med, i) => (
+          {/* {member.maintenanceMeds?.map((med, i) => (
             <div key={i} className="group relative flex flex-col p-3 rounded-xl border border-olive-light bg-egg/20">
               <label className="flex items-center gap-3 cursor-pointer">
                 <input type="checkbox" className="size-4 accent-olive rounded border-olive-light" 
@@ -158,12 +156,45 @@ export const DailyLogPanel = ({ member }) => {
                 <div className="flex flex-col">
                   <span className="text-xs font-bold text-midnight">{med.name}</span>
                   <span className="text-[10px] text-olive font-medium italic">
-                    Schedule: {medSchedule(med) || "As prescribed"}
+                    Schedule: {med.notes || "As prescribed"}
                   </span>
                 </div>
               </label>
             </div>
-          ))}
+          ))} */}
+
+          {member.maintenanceMeds?.map((med, i) =>
+            med.time?.map((t, j) => (
+              <div
+                key={`${i}-${j}`}
+                className="group relative flex flex-col p-3 rounded-xl border border-olive-light bg-egg/20"
+              >
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="size-4 accent-olive rounded border-olive-light"
+                    checked={!!checkedMeds[`${med.name}-${t}`]}
+                    onChange={(e) => {
+                      setCheckedMeds({
+                        ...checkedMeds,
+                        [`${med.name}-${t}`]: e.target.checked,
+                      });
+                    }}
+                  />
+
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-midnight">
+                      {med.name}
+                    </span>
+
+                    <span className="text-[10px] text-olive font-medium italic">
+                      {t} · {med.notes || "As prescribed"}
+                    </span>
+                  </div>
+                </label>
+              </div>
+            ))
+          )}
         </div>
       </div>
 

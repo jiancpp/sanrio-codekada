@@ -4,6 +4,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import ProfilePage from './pages/ProfilePage';
 import FamilyDashboard from './pages/FamilyDashboard';
+import FamilyMedications from './pages/FamilyMedications';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/profile/:id" element={<ProfilePage />} />
         <Route path="/dashboard" element={<FamilyDashboard />} />
+        <Route path="/medications" element={<FamilyMedications />} />
       </Routes>
     </BrowserRouter>
   );

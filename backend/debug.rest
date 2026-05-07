@@ -66,12 +66,19 @@ GET http://localhost:5001/api/family/get/{{familyCode}}
 Authorization: Bearer {{token}}
 
 ### Test Update Info
-PUT http://localhost:5001/api/users/profile/edit-info/{{lolaId}}
+PUT http://localhost:5001/api/users/profile/edit-info/{{userId}}
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "name": "Lola Tessie"
+    "maintenanceMeds": [
+        {
+            "name": "Metformin",
+            "days": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
+            "time": ["9:00 AM", "9:00 PM"],
+            "notes": "Before meal"
+        }
+    ]
 }
 
 # ==========================================
