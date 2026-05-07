@@ -292,6 +292,59 @@ export const useApi = () => {
         NOTIFICATIONS
         ══════════════════════════════════════════════ */
 
+    const remindMember = async ({ familyCode, to, from, message }) => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const response = await fetch(`${BASE_URL}/system/notify-member`, {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ familyCode, to, from, message })
+            })
+
+            const family = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Register failed');
+            }
+
+            return family; // Return family code
+
+        } catch (err) {
+            setError(err.message);
+            return null;
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    const getNotifications = async (userId) => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const response = await fetch(`${BASE_URL}/system/get-notif/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to get user logs');
+            }
+
+            return data;
+        } catch (err) {
+            setError(err.message);
+            return [];
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
     /* ══════════════════════════════════════════════
         MEDICINES
@@ -310,6 +363,8 @@ export const useApi = () => {
         getUserLogs,
         getDailyLog,
         updateMember,
+        remindMember,
+        getNotifications,
         isLoading,
         error
     };

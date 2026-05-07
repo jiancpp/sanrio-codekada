@@ -43,7 +43,7 @@ Join my family using this code: ${family?.familyCode}
   };
 
   // =========== Backend connection ================== //
-  const { getDailyLog, error } = useApi();
+  const { getDailyLog, remindMember, error } = useApi();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [family, setFamily] = useState(null);
@@ -64,6 +64,7 @@ Join my family using this code: ${family?.familyCode}
     }
   }, [user]);
 
+  // Load data
   useEffect (() => {
     const storedUserString = localStorage.getItem('user') || sessionStorage.getItem('user');
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
@@ -130,6 +131,21 @@ Join my family using this code: ${family?.familyCode}
     }
   }, [navigate])
 
+  // NOT YET TESTED
+  const handleNudge = async (memberNudged) => {
+    if (memberNudged?.loggedToday) return;
+
+    let message = "Don't forget to save your daily log!"
+    const data = await remindMember({
+      familyCode: family?.familyCode,
+      from: user?._id || null,
+      to: memberNudged?._id,
+      message
+    })
+    console.log(data); // REMOVE ME JIA
+  }
+
+  // =========================================== //
   return (
     <div className="min-h-screen bg-egg text-midnight">
       <Navbar variant="auth" />
@@ -161,6 +177,7 @@ Join my family using this code: ${family?.familyCode}
               member={member} 
               selected={selected?._id === member._id}
               onClick={setSelected}
+              onNudge={handleNudge}
             />
           ))}
         </div>
