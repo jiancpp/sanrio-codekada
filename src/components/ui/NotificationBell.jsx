@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import socket from "../../hooks/socket"
 import { useApi } from "../../hooks/useApi"
+import { useNavigate } from 'react-router';
 
 export const NotificationBell = () => {
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
 
   const { getNotifications } = useApi();
+  const navigate = useNavigate();
 
   // temporary mock notifications
   const mock_notifications = [
