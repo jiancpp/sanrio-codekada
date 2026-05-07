@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import logo from '../../assets/logo.png';
 
 import NotificationBell from '../ui/NotificationBell';
 
@@ -18,6 +19,11 @@ export const Navbar = ({ variant = "public" }) => {
           <div className="max-w-screen-xl flex items-center justify-between mx-auto px-6 py-4">
 
             <a href="/" className="flex items-center gap-2 group">
+              <img
+                src={logo}
+                alt="TalaCare Logo"
+                className="h-8 w-auto object-contain transition-transform group-hover:scale-110"
+              />
               <span className="font-display font-black text-2xl text-midnight">
                 TalaCare
               </span>
@@ -55,8 +61,15 @@ export const Navbar = ({ variant = "public" }) => {
           <nav className="bg-white w-full max-w-5xl bg-egg/95 backdrop-blur-md border border-olive-light shadow-lg rounded-full px-6 py-3 flex items-center justify-between">
 
             {/* Left */}
-            <Link to="/dashboard" className="font-display font-black text-midnight text-lg">
-              TalaCare
+            <Link to="/dashboard" className="flex items-center gap-2 font-display font-black text-midnight text-lg group">
+              <img
+                src={logo}
+                alt="TalaCare Logo"
+                className="h-8 w-auto object-contain transition-transform group-hover:scale-110"
+              />
+              <span>
+                TalaCare
+              </span>
             </Link>
 
             {/* Center */}
