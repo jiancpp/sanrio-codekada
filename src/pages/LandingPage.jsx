@@ -11,7 +11,7 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-egg font-body text-midnight selection:bg-jasmine/30">
-      <Navbar />
+      <Navbar variant="public" />
 
       <main>
         {/* ── HERO SECTION ── */}
