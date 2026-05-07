@@ -39,13 +39,13 @@ const LandingPage = () => {
             <div className="fade-up d3 flex flex-wrap justify-center lg:justify-start gap-4">
               <button 
                 onClick={() => navigate('/register')}
-                className="bg-midnight text-egg px-8 py-4 rounded-full font-bold shadow-lg hover:-translate-y-1 active:scale-95 transition-all"
+                className="bg-midnight text-egg px-8 py-4 rounded-full font-bold shadow-lg hover:-translate-y-1 hover:cursor-pointer active:scale-95 transition-all"
               >
                 Get Started
               </button>
               <button 
                 onClick={() => navigate('/dashboard')}
-                className="border-2 border-midnight text-midnight px-8 py-4 rounded-full font-bold hover:bg-midnight hover:text-egg active:scale-95 transition-all"
+                className="border-2 border-midnight text-midnight px-8 py-4 rounded-full font-bold hover:bg-midnight hover:cursor-pointer hover:text-egg active:scale-95 transition-all"
               >
                 Log in
               </button>
