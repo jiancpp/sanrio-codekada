@@ -67,3 +67,48 @@ export const isSameDay = (a, b) => {
     && da.getMonth()    === db.getMonth()
     && da.getDate()     === db.getDate();
 };
+
+export const toMinutes = (timeStr) => {
+  const [time, ampm] = timeStr.split(" ");
+  let [h, m] = time.split(":").map(Number);
+
+  if (ampm === "PM" && h !== 12) h += 12;
+  if (ampm === "AM" && h === 12) h = 0;
+
+  return h * 60 + m;
+};
+
+export const nowMinutes = () => {
+  const now = new Date();
+  return now.getHours() * 60 + now.getMinutes();
+};
+
+export const timeStatus = (scheduleStr, taken) => {
+  if (taken) return "taken";
+
+  const scheduled = toMinutes(scheduleStr);
+  const now = nowMinutes();
+
+  if (scheduled < now - 10) return "overdue";
+  if (scheduled <= now + 60) return "soon";
+  return "upcoming";
+};
+
+export const buildAllMeds = (members) => {
+  const flat = [];
+
+  members.forEach((member) => {
+    member.medsTaken.forEach((med, i) => {
+      flat.push({
+        ...med,
+        member,
+        medIndex: i,
+        status: timeStatus(med.time, med.status),
+      });
+    });
+  });
+
+  return flat.sort(
+    (a, b) => toMinutes(a.time) - toMinutes(b.time)
+  );
+};
