@@ -69,48 +69,105 @@ export const Navbar = ({ variant = "public" }) => {
 
       {/* ================= AUTH NAVBAR ================= */}
       {isLoggedIn && (
-        <div className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4">
-          <nav className="bg-white w-full max-w-5xl bg-egg/95 backdrop-blur-md border border-olive-light shadow-lg rounded-full px-6 py-3 flex items-center justify-between">
+  <div className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4">
+    <nav className="bg-white w-full bg-egg/95 backdrop-blur-md border-b border-olive-light shadow-lg rounded-[35px] px-6 py-3 max-w-6xl">
+      
+      {/* TOP BAR */}
+      <div className="grid grid-cols-[auto_1fr_auto] items-center gap-4">
 
-            {/* Left */}
-            <Link to="/dashboard" className="flex items-center gap-2 font-display font-black text-midnight text-lg group">
-              <img
-                src={logo}
-                alt="TalaCare Logo"
-                className="h-8 w-auto object-contain transition-transform group-hover:scale-110"
-              />
-              <span>
-                TalaCare
-              </span>
+        {/* LEFT */}
+        <Link
+          to="/dashboard"
+          className="flex items-center gap-2 my-1.5 font-display font-black text-midnight text-lg group shrink-0"
+        >
+          <img
+            src={logo}
+            alt="TalaCare Logo"
+            className="h-8 w-auto object-contain transition-transform group-hover:scale-110"
+          />
+          <span className="block">TalaCare</span>
+        </Link>
+
+        {/* CENTER */}
+        <div className="hidden md:flex justify-center gap-8 text-sm font-bold text-mauve">
+          <Link to="/dashboard" className="hover:text-olive">
+            Dashboard
+          </Link>
+
+          <Link to="/medications" className="hover:text-olive">
+            Medication
+          </Link>
+
+          <Link to="/history" className="hover:text-olive">
+            History
+          </Link>
+        </div>
+
+        {/* RIGHT */}
+        <div className="hidden md:flex items-center justify-end gap-3 shrink-0">
+          <Link
+            to="/profile"
+            className="bg-midnight text-egg px-5 py-2 rounded-full text-sm font-bold"
+          >
+            Profile
+          </Link>
+
+          <NotificationBell />
+
+          <button
+            onClick={handleLogOut}
+            className="relative bg-egg border border-olive-light rounded-full p-2 shadow-sm hover:shadow-md transition"
+          >
+            <HiOutlineLogout className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* MOBILE MENU BUTTON */}
+        <button
+          className="md:hidden justify-self-end"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          {isOpen ? "✕" : "☰"}
+        </button>
+      </div>
+
+      {/* MOBILE MENU */}
+      {isOpen && (
+        <div className="md:hidden pt-4 mt-4 border-t border-olive-light flex flex-col items-center gap-4 text-sm font-bold text-mauve">
+          <Link to="/dashboard" className="hover:text-olive">
+            Dashboard
+          </Link>
+
+          <Link to="/medications" className="hover:text-olive">
+            Medication
+          </Link>
+
+          <Link to="/history" className="hover:text-olive">
+            History
+          </Link>
+
+          <div className="flex items-center gap-3 pt-2">
+            <Link
+              to="/profile"
+              className="bg-midnight text-egg px-5 py-2 rounded-full text-sm font-bold"
+            >
+              Profile
             </Link>
 
-            {/* Center */}
-            <div className="hidden md:flex gap-8 text-sm font-bold text-mauve">
-              <Link to="/dashboard" className="hover:text-olive">Dashboard</Link>
-              <Link to="/medications" className="hover:text-olive">Medication</Link>
-              <Link to="/history" className="hover:text-olive">History</Link>
-            </div>
+            <NotificationBell />
 
-            {/* Right */}
-            <div className="flex items-center gap-3">
-              <Link
-                to="/profile"
-                className="bg-midnight text-egg px-5 py-2 rounded-full text-sm font-bold"
-              >
-                Profile
-              </Link>
-              <NotificationBell />
-              <button
-                onClick={(e) => handleLogOut()}
-                className="relative bg-egg border border-olive-light rounded-full p-2 shadow-sm hover:shadow-md transition"
-              >
-                <HiOutlineLogout className="w-5 h-5" />
-              </button>
-            </div>
-
-          </nav>
+            <button
+              onClick={handleLogOut}
+              className="relative bg-egg border border-olive-light rounded-full p-2 shadow-sm hover:shadow-md transition"
+            >
+              <HiOutlineLogout className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       )}
+    </nav>
+  </div>
+)}
     </>
   );
 };
