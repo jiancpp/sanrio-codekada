@@ -12,6 +12,11 @@ export const DailyLogPanel = ({ member }) => {
   } = useMediaUpload(null, { multiple: false });  // Edit multiple later
 
   const [isSaved, setIsSaved] = useState(false);
+  
+  const getDayToday = (date = new Date()) => {
+    const days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+    return days[date.getDay()];
+  }
 
   // Forms Data
   // Todo initialize from member's daily log for the day
@@ -21,6 +26,7 @@ export const DailyLogPanel = ({ member }) => {
   const [bloodSugar, setBloodSugar] = useState('')
   const [waterIntake, setWaterIntake] = useState('')
   const [checkedMeds, setCheckedMeds] = useState({});
+  const [medDays, setMedDays] = useState({});
 
   useEffect(() => {
     let cancelled = false;
@@ -32,6 +38,12 @@ export const DailyLogPanel = ({ member }) => {
   
       const today = new Date().toISOString().split('T')[0];
       const existingLog = await getDailyLog(member._id, today);
+      let days = {};
+      member.maintenanceMeds.forEach((med, i) => {
+        days[med.name] = med.days
+      })  
+      setMedDays(days);
+
   
       if (cancelled) return;
   
@@ -45,6 +57,7 @@ export const DailyLogPanel = ({ member }) => {
         const medStatus = {};
   
         existingLog.medsTaken?.forEach(med => {
+          if (medDays[med.name].includes(getDayToday()))
           medStatus[`${med.name}-${med.time}`] = med.status;
         });
   
@@ -142,28 +155,8 @@ export const DailyLogPanel = ({ member }) => {
         </div>
 
         <div className="space-y-2">
-          {/* {member.maintenanceMeds?.map((med, i) => (
-            <div key={i} className="group relative flex flex-col p-3 rounded-xl border border-olive-light bg-egg/20">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" className="size-4 accent-olive rounded border-olive-light" 
-                checked={!!checkedMeds[med.name]}
-                onChange={(e) => {
-                  setCheckedMeds({
-                    ...checkedMeds,
-                    [med.name]: e.target.checked
-                  });
-                }}/>
-                <div className="flex flex-col">
-                  <span className="text-xs font-bold text-midnight">{med.name}</span>
-                  <span className="text-[10px] text-olive font-medium italic">
-                    Schedule: {med.notes || "As prescribed"}
-                  </span>
-                </div>
-              </label>
-            </div>
-          ))} */}
-
           {member.maintenanceMeds?.map((med, i) =>
+            medDays[med.name]?.includes(getDayToday()) &&
             med.time?.map((t, j) => (
               <div
                 key={`${i}-${j}`}
