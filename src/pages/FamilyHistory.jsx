@@ -134,7 +134,7 @@ export default function HealthHistory() {
 
   const av = selectedMember?.avatar || 'olive';
 
-  if (isLoadingMembers || isLoadingLogs) return (
+  if (isLoadingMembers) return (
     <div className="min-h-screen bg-egg flex items-center justify-center">
       <p className="font-display font-black text-sm uppercase tracking-widest text-midnight animate-pulse">
         Loading History...

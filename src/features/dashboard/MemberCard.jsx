@@ -23,7 +23,7 @@ export const MemberCard = ({ member, selected, onClick, onNudge }) => {
     <DashboardCard selected={selected} onClick={() => onClick(member)}>
       <div className="flex items-start justify-between gap-3 mb-4">
         <div className="flex items-center gap-3 min-w-0">
-          <Avatar initial={member.initial} type={member.type} />
+          <Avatar initial={member.initial} type={member.avatar} />
 
           <div className="min-w-0">
             <div className="flex items-center gap-2">
