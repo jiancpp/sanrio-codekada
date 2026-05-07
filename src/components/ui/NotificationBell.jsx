@@ -101,7 +101,7 @@ export const NotificationBell = () => {
                 key={n.id}
                 className="px-4 pb-3 bg-white cursor-pointer transition"
               >
-                <span className="text-xs text-midnight font-bold mr-2">{n.from?.name}</span>
+                <span className="text-xs text-midnight font-bold mr-2">{n.from.name}</span>
                 <span className="text-xs text-mauve">{getTimeAgo(n.createdAt)}</span>
                 <p className="text-sm text-midnight">{n.message}</p>
               </div>

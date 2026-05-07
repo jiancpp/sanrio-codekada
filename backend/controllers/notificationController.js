@@ -5,12 +5,18 @@ exports.notifyMember = async (req, res) => {
     try {
       const { to, from = null, message, familyCode } = req.body;
   
-      const notif = await Notification.create({
+      const notif = new Notification({
         to,
         from,
         familyCode,
         message,
       });
+      
+      await notif.save();
+      
+      await notif.populate("to from");
+
+      console.log(notif);
   
       // emit to recipient user room
       const io = req.app.get("io");
