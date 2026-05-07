@@ -19,8 +19,6 @@ export const MemberCard = ({ member, selected, onClick, onNudge }) => {
     setNudged(false);
   }, [nudged])
 
-  console.log(member.wi)
-
   return (
     <DashboardCard selected={selected} onClick={() => onClick(member)}>
       <div className="flex items-start justify-between gap-3 mb-4">

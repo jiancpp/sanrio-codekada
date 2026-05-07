@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 import { MemberCard } from '../features/dashboard/MemberCard';
 import { QuickAction } from '../features/dashboard/QuickAction';
@@ -24,117 +24,99 @@ socket.on("connect_error", (err) => {
 });
 
 export default function FamilyDashboard() {
-  // =========== Frontend Variables ================== //
-  
+  const [user, setUser] = useState(null);
+  const [family, setFamily] = useState(null);
+  const [members, setMembers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [selected, setSelected] = useState(null);
   const [activeTab, setActiveTab] = useState("log"); // 'log' or 'streak'
   const [copied, setCopied] = useState(false);
 
+  const { getDailyLog, remindMember } = useApi();
+  const navigate = useNavigate()
+
+  // Define fetchMembers with useCallback so it's stable
+  const fetchMembers = useCallback(async (currentUser) => {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    if (!currentUser || !token) return;
+
+    try {
+      const response = await fetch(`${BASE_URL}/family/get/${currentUser.familyCode}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        const updatedMembers = await Promise.all(
+          data.members.map(async (member) => {
+            const dailyLog = await getDailyLog(member._id, new Date());
+            return {
+              ...member,
+              age: getAge(new Date(member.birthdate)) || 'N/A',
+              initial: member.name.slice(0, 2).toUpperCase(),
+              bp: dailyLog?.vitals.bloodPressure || null,
+              hr: dailyLog?.vitals.heartRate || null,
+            };
+          })
+        );
+        setFamily(data);
+        setMembers(updatedMembers);
+        setSelected((prev) => prev || updatedMembers[0]);
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Initial Auth & Data Load
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user') || sessionStorage.getItem('user');
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      fetchMembers(parsedUser);
+    } else {
+      navigate('/login');
+    }
+  }, [fetchMembers, navigate]);
+
+  // Dedicated Socket Listener Effect
+  useEffect(() => {
+    if (!user?.familyCode) return;
+
+    // Join the family room
+    socket.emit("join-family", user.familyCode);
+
+    // Listen for updates
+    const handleUpdate = () => {
+      console.log("Real-time update received: Refreshing members...");
+      fetchMembers(user);
+    };
+
+    socket.on("daily-log-updated", handleUpdate);
+
+    return () => {
+      socket.off("daily-log-updated", handleUpdate);
+    };
+  }, [user, fetchMembers]);
+
+  // =========== Frontend Variables ================== //
+    
+
   const handleCopyLink = () => {
     const message = `You're invited to TalaCare ❤️
 
-Join my family using this code: ${family?.familyCode}
+  Join my family using this code: ${family?.familyCode}
 
-🌐 https://talacare.onrender.com/`;
+  🌐 https://talacare.onrender.com/`;
     
     navigator.clipboard.writeText(message);    
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // =========== Backend connection ================== //
-  const { getDailyLog, remindMember, error } = useApi();
-  const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-  const [family, setFamily] = useState(null);
-  const [members, setMembers] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // to prevent page crash
-
-  // Allow real time updates from family
-  useEffect(() => {
-    if (family?.familyCode) {
-      socket.emit("join-family", family.familyCode);
-    }
-  }, [family]);
-
-  // Get notifications
-  useEffect(() => {
-    if (user?._id) {
-      socket.emit("join", user._id);
-    }
-  }, [user]);
-
-  // Load data
-  useEffect (() => {
-    const storedUserString = localStorage.getItem('user') || sessionStorage.getItem('user');
-    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-
-    if (storedUserString) {
-      const parsedUser = JSON.parse(storedUserString);
-      setUser(parsedUser);
-
-      const fetchMembers = async () => {
-        try {
-          const response = await fetch(`${BASE_URL}/family/get/${parsedUser.familyCode}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}` // Security key
-            }
-          });
-
-          // Unpack the JSON data
-          const data = await response.json();
-
-          if (response.ok) {
-
-            const updatedMembers = await Promise.all(
-              data.members.map(async (member) => {
-            
-                const dailyLog = await getDailyLog(member._id, new Date());
-                return {
-                  ...member,
-                  age: getAge(new Date(member.birthdate)) || 'N/A',
-                  initial: member.name.slice(0, 2).toUpperCase(),
-                  bp: dailyLog?.vitals.bloodPressure || null,
-                  hr: dailyLog?.vitals.heartRate || null,
-                  bs: dailyLog?.vitals.bloodSugarLevel || null,
-                  w: dailyLog?.vitals.weight || null,
-                  wi: dailyLog?.waterIntake || 0,
-                };
-              })
-            );
-
-            setFamily(data);
-            setMembers(updatedMembers);
-            setSelected((prev) => prev || updatedMembers[0]); 
-          } else {
-            console.error("Backend error:", data.message);
-          }
-
-        } catch (error) {
-          console.error("Network error:", error);
-        } finally {
-          setIsLoading(false); // Stop the loading spinner
-        }
-      }
-      
-      fetchMembers();
-
-      socket.on("daily-log-updated", () => {
-        fetchMembers();
-      });
-    
-      return () => {
-        socket.off("daily-log-updated");
-      };
-
-    } else {
-      navigate('/login')
-    }
-  }, [navigate])
-
-  // NOT YET TESTED
   const handleNudge = async (memberNudged) => {
     // if (memberNudged?.loggedToday) return;   Allow nudge even if user has logged
     if (memberNudged?._id === user?._id) return;
