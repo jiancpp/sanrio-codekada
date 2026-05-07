@@ -184,7 +184,7 @@ const LandingPage = () => {
               />
               <FeatureCard
                 title="Med Archive"
-                desc="Store lab results and pill label scans per member."
+                desc="Store daily logs and lab test attachments per member."
                 icon="🖼️"
                 tag="Smart Tools"
                 tagColor="jasmine"

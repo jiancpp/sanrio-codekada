@@ -179,7 +179,8 @@ export const FamilyStreakPanel = ({ members }) => {
       {/* Nudge Context Note */}
       <div className="mt-2 p-3 bg-jasmine-light/50 rounded-xl border border-jasmine/20">
         <p className="text-[11px] text-jasmine-dark leading-tight italic">
-          "Your family streak is safe! Just one more log needed from **Papa** to hit 8 days."
+          "Every log counts! The family streak only grows when everyone participates. 
+          Check in now to build your progress together."
         </p>
       </div>
     </div>

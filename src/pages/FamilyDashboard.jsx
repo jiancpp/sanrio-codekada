@@ -29,7 +29,7 @@ export default function FamilyDashboard() {
   const [members, setMembers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selected, setSelected] = useState(null);
-  const [activeTab, setActiveTab] = useState("log"); // 'log' or 'streak'
+  const [activeTab, setActiveTab] = useState("streak"); // 'log' or 'streak'
   const [copied, setCopied] = useState(false);
 
   const { getDailyLog, remindMember } = useApi();
@@ -217,7 +217,7 @@ export default function FamilyDashboard() {
 
           {/* Tools Grid */}
           <div className="space-y-3">
-            <QuickAction 
+            {/* <QuickAction 
               title="Upload Lab Tests" 
               icon="🖼️" 
               colorClass="bg-jasmine-light" 
@@ -228,13 +228,14 @@ export default function FamilyDashboard() {
               icon="💊" 
               colorClass="bg-coral-light" 
               sub={`${members.filter(m => !m.loggedToday).length} members pending logs`} 
-            />
+            /> */}
             <QuickAction 
               title="Emergency Info" 
               icon="🆘" 
               colorClass="bg-coral-light" 
               isDark 
               sub="Quick access to blood types & meds" 
+              onClick={() => navigate('/emergency')}
             />
           </div>
         </div>

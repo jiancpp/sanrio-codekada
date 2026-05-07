@@ -12,11 +12,14 @@ export const useApi = () => {
         setIsLoading(true);
         setError(null);
 
+        const avatar = ['olive', 'jasmine', 'coral', 'mauve'];
+        const randomAvatar = avatar[Math.floor(Math.random() * avatar.length)];
+
         try {
             const response = await fetch(`${BASE_URL}/users/register`, {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, email, password })
+                body: JSON.stringify({ name, email, password, avatar: randomAvatar })
             })
 
             const data = await response.json();
