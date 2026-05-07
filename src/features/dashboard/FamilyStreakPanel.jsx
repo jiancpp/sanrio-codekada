@@ -7,46 +7,45 @@ import { toPHDate, getMonday, formatLocalDate } from "../../hooks/utils";
 const STREAK_DAYS = ["M", "T", "W", "T", "F", "S", "S"];
 
 const getLoggedDays = (logs, weekStart, familyMembers) => {
-  if (!weekStart || isNaN(new Date(weekStart))) return [];
+  if (!weekStart || isNaN(new Date(weekStart)) || !familyMembers?.length) return [];
 
-  const monday = getMonday(weekStart);
-  monday.setHours(0, 0, 0, 0);
+  // Get the Monday of the requested week
+  const monday = getMonday(new Date(weekStart));
+  
+  // Map to simple YYYY-MM-DD strings for the 7 days of that week
+  const weekDates = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    return d.toISOString().split('T')[0]; // Format: "2023-10-27"
+  });
 
-  const loggedDays = [];
+  const memberCount = familyMembers.length;
+  const loggedDaysIndices = [];
 
-  const normalize = (date) => {
-    const d = new Date(date);
-    d.setHours(0, 0, 0, 0);
-    return d.getTime();
-  };
-
-  const memberCount = familyMembers?.length || 0;
-
-  for (let i = 0; i < 7; i++) {
-    const currentDay = new Date(monday);
-    currentDay.setDate(monday.getDate() + i);
-    currentDay.setHours(0, 0, 0, 0);
-
-    const dayTime = currentDay.getTime();
-
-    // count how many unique members logged this day
+  // Check each day of the week
+  weekDates.forEach((dateString, index) => {
     const membersLogged = new Set();
 
     logs?.forEach((log) => {
       if (!log.date || !log.userId) return;
+      
+      // Normalize log date to YYYY-MM-DD
+      const logDateString = new Date(log.date).toISOString().split('T')[0];
 
-      if (normalize(log.date) === dayTime) {
-        membersLogged.add(log.userId.toString());
+      if (logDateString === dateString) {
+        membersLogged.add(log.userId._id.toString());
       }
     });
 
-    // ONLY mark day as complete if ALL members logged
-    if (membersLogged.size === memberCount) {
-      loggedDays.push(i);
+    // Mark as complete if all members are present
+    if (membersLogged.size >= memberCount) {
+      loggedDaysIndices.push(index);
     }
-  }
+  });
 
-  return loggedDays;
+  console.log(loggedDaysIndices)
+
+  return loggedDaysIndices;
 };
 
 export const FamilyStreakPanel = ({ members }) => {
@@ -89,6 +88,8 @@ export const FamilyStreakPanel = ({ members }) => {
       members.map(m => {
         streaks[m.name] = m.streak;
       })
+
+      // console.log(logsData);
 
       setFamilyStreak(streakData.familyStreak);
       setLoggedDays(getLoggedDays(logsData, weekStart, members))
