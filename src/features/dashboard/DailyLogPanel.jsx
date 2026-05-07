@@ -144,6 +144,7 @@ export const DailyLogPanel = ({ member }) => {
             <div key={i} className="group relative flex flex-col p-3 rounded-xl border border-olive-light bg-egg/20">
               <label className="flex items-center gap-3 cursor-pointer">
                 <input type="checkbox" className="size-4 accent-olive rounded border-olive-light" 
+                checked={!!checkedMeds[med.name]}
                 onChange={(e) => {
                   setCheckedMeds({
                     ...checkedMeds,
