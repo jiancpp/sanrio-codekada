@@ -6,7 +6,7 @@ import { toPHDate, getMonday, formatLocalDate } from "../../hooks/utils";
 
 const STREAK_DAYS = ["M", "T", "W", "T", "F", "S", "S"];
 
-const getLoggedDays = (logs, weekStart) => {
+const getLoggedDays = (logs, weekStart, familyMembers) => {
   if (!weekStart || isNaN(new Date(weekStart))) return [];
 
   const monday = getMonday(weekStart);
@@ -20,18 +20,29 @@ const getLoggedDays = (logs, weekStart) => {
     return d.getTime();
   };
 
+  const memberCount = familyMembers?.length || 0;
+
   for (let i = 0; i < 7; i++) {
     const currentDay = new Date(monday);
     currentDay.setDate(monday.getDate() + i);
     currentDay.setHours(0, 0, 0, 0);
 
-    const hasLog = logs?.some((log) => {
-      if (!log.date) return false;
-      return normalize(log.date) === currentDay.getTime();
+    const dayTime = currentDay.getTime();
+
+    // count how many unique members logged this day
+    const membersLogged = new Set();
+
+    logs?.forEach((log) => {
+      if (!log.date || !log.userId) return;
+
+      if (normalize(log.date) === dayTime) {
+        membersLogged.add(log.userId.toString());
+      }
     });
 
-    if (hasLog) {
-      loggedDays.push(i); // Monday = 0
+    // ONLY mark day as complete if ALL members logged
+    if (membersLogged.size === memberCount) {
+      loggedDays.push(i);
     }
   }
 
@@ -80,7 +91,7 @@ export const FamilyStreakPanel = ({ members }) => {
       })
 
       setFamilyStreak(streakData.familyStreak);
-      setLoggedDays(getLoggedDays(logsData, weekStart))
+      setLoggedDays(getLoggedDays(logsData, weekStart, members))
       setMemberStreaks(streaks);
     }
     fetchFamilyStreak();
