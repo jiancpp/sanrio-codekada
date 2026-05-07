@@ -4,6 +4,7 @@ const Family = require('../models/Family');
 exports.notifyMember = async (req, res) => {
     try {
       const { to, from = null, message, familyCode } = req.body;
+      if (to === from) return res.status.json({ message: "Don't nudge yourself :( "})
   
       const notif = new Notification({
         to,
