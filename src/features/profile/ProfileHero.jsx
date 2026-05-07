@@ -3,7 +3,7 @@ import { Avatar } from '../../components/ui/Avatar';
 export const ProfileHero = ({
   p,
   editing,
-  onEdit,       // ProfilePage passes onEdit — was being received as onEditClick
+  onEdit,   
   onSave,
   onCancel,
   set,
@@ -19,15 +19,12 @@ export const ProfileHero = ({
 
     <div className="flex flex-col md:flex-row items-center gap-6">
 
-      {/* Avatar */}
-      <Avatar name={fullName} />
-
       {/* Name + badges */}
       <div className="flex-1 text-center md:text-left">
         {editing ? (
           <input
             value={p.name ?? ''}
-            onChange={e => set('name', e.target.value)}   // ← was set("firstName", ...)
+            onChange={e => set('name', e.target.value)}
             placeholder="Full name"
             className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-egg font-display font-black text-lg outline-none w-full max-w-xs mb-3 focus:border-white/40 transition-colors"
           />
