@@ -105,7 +105,7 @@ export const FamilyStreakPanel = ({ members }) => {
       <div className="flex justify-between items-center bg-olive-light/30 p-4 rounded-2xl border border-olive-light">
         <div>
           <p className="font-display font-black text-2xl text-midnight tracking-tight">
-            🔥 {familyStreak} DAYS
+            🔥 {familyStreak} {familyStreak != 1 ? 'DAYS' : 'DAY'}
           </p>
           <p className="text-[10px] uppercase font-bold text-olive-dark/60 tracking-widest">
             Family Consistency
