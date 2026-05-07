@@ -15,8 +15,6 @@ exports.notifyMember = async (req, res) => {
       await notif.save();
       
       await notif.populate("to from");
-
-      console.log(notif);
   
       // emit to recipient user room
       const io = req.app.get("io");

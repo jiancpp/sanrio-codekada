@@ -57,8 +57,9 @@ export const DailyLogPanel = ({ member }) => {
         const medStatus = {};
   
         existingLog.medsTaken?.forEach(med => {
-          if (medDays[med.name].includes(getDayToday()))
-          medStatus[`${med.name}-${med.time}`] = med.status;
+          if (days[med.name]?.includes(getDayToday())) {
+            medStatus[`${med.name}-${med.time}`] = med.status;
+          }
         });
   
         setCheckedMeds(medStatus);
@@ -168,10 +169,10 @@ export const DailyLogPanel = ({ member }) => {
                     className="size-4 accent-olive rounded border-olive-light"
                     checked={!!checkedMeds[`${med.name}-${t}`]}
                     onChange={(e) => {
-                      setCheckedMeds({
-                        ...checkedMeds,
-                        [`${med.name}-${t}`]: e.target.checked,
-                      });
+                      setCheckedMeds(prev => ({
+                          ...prev,
+                          [`${med.name}-${t}`]: e.target.checked,
+                      }));
                     }}
                   />
 
