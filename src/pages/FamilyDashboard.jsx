@@ -243,6 +243,7 @@ Join my family using this code: ${family?.familyCode}
               sub={`${members.filter(m => !m.loggedToday).length} members pending logs`} 
             />
             <QuickAction 
+              onClick={() => navigate("/emergency")}
               title="Emergency Info" 
               icon="🆘" 
               colorClass="bg-coral-light" 
