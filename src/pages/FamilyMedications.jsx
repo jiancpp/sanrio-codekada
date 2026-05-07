@@ -114,19 +114,28 @@ export default function FamilyMedications() {
     const sender    = JSON.parse(storedStr);
     const target    = members.find(m => m.name === memberName);
 
-    if (target) {
-      await remindMember({
+    // Don't nudge yourself
+    // if (!target || String(target._id) === String(sender._id ?? sender.id)) return;
+
+    const messages = [
+        `Hey ${memberName}! Don't forget to take your ${medName} 💊`,
+        `Reminder: ${medName} is due! Take care 💛`,
+        `Just checking in — have you taken your ${medName} yet? 🏡`,
+        `Don't forget your ${medName}! Your health matters 🤍`,
+    ];
+    const message = messages[Math.floor(Math.random() * messages.length)];
+
+    await remindMember({
         familyCode: sender.familyCode ?? sender.family_code,
         to:         target._id,
-        from:       sender._id ?? sender.id,
-        message:    `Hey ${memberName}! Don't forget to take your ${medName} 💊`,
-      });
-    }
+        from:       sender._id ?? sender.id ?? null,
+        message,
+    });
 
     const id = Date.now();
     setToasts(t => [...t, { id, member: memberName, med: medName }]);
     setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), 3500);
-  };
+    };
 
   // =========== Derived stats =========== //
   const allMeds      = members.flatMap(m => m.medsTaken);
