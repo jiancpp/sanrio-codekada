@@ -208,14 +208,14 @@ Join my family using this code: ${family?.familyCode}
               <button
                 onClick={() => setActiveTab("streak")}
                 className={`flex-1 py-4 font-display font-black text-xs uppercase tracking-widest transition-all
-                  ${activeTab === "streak" ? "bg-white border-b-2 border-olive text-midnight" : "bg-egg/50 text-gray-400"}`}
+                  ${activeTab === "streak" ? "bg-white border-b-2 border-olive text-midnight" : "bg-egg/50 text-gray-400 hover:bg-egg/35 hover:text-gray-600"}`}
               >
                 Family Streak
               </button>
               <button
                 onClick={() => setActiveTab("log")}
                 className={`flex-1 py-4 font-display font-black text-xs uppercase tracking-widest transition-all
-                  ${activeTab === "log" ? "bg-white border-b-2 border-olive text-midnight" : "bg-egg/50 text-gray-400"}`}
+                  ${activeTab === "log" ? "bg-white border-b-2 border-olive text-midnight" : "bg-egg/50 text-gray-400 hover:bg-egg/35 hover:text-gray-600"}`}
               >
                 Daily Log
               </button>
