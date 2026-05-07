@@ -60,3 +60,10 @@ export const toPHDate = (rawDate) => {
     
     return formatLocalDate(phDate);
   };
+
+export const isSameDay = (a, b) => {
+  const da = new Date(a), db = new Date(b);
+  return da.getFullYear() === db.getFullYear()
+    && da.getMonth()    === db.getMonth()
+    && da.getDate()     === db.getDate();
+};

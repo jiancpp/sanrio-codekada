@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import ProfilePage from './pages/ProfilePage';
 import FamilyDashboard from './pages/FamilyDashboard';
 import FamilyMedications from './pages/FamilyMedications';
+import FamilyHistory from './pages/FamilyHistory';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/profile/:id" element={<ProfilePage />} />
         <Route path="/dashboard" element={<FamilyDashboard />} />
         <Route path="/medications" element={<FamilyMedications />} />
+        <Route path="/history" element={<FamilyHistory />} />
       </Routes>
     </BrowserRouter>
   );
