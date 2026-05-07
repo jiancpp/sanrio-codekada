@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import logo from '../../assets/logo.png';
+import { HiOutlineLogout } from "react-icons/hi";
 
 import NotificationBell from '../ui/NotificationBell';
 
 export const Navbar = ({ variant = "public" }) => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
   const isLoggedIn = variant === "auth";
@@ -36,7 +39,9 @@ export const Navbar = ({ variant = "public" }) => {
                 <a href="#who" className="hover:text-olive">Who it's for</a>
               </div>
 
-              <button className="bg-midnight text-egg px-6 py-2.5 rounded-full font-bold text-sm">
+              <button
+                onClick={() => navigate('/register')}
+                className="bg-midnight text-egg px-6 py-2.5 rounded-full font-bold text-sm hover:-translate-y-0.5 hover:cursor-pointer active:scale-95 transition-all">
                 Get Started
               </button>
             </div>
@@ -81,14 +86,19 @@ export const Navbar = ({ variant = "public" }) => {
 
             {/* Right */}
             <div className="flex items-center gap-3">
-              <NotificationBell />
               <Link
                 to="/profile"
                 className="bg-midnight text-egg px-5 py-2 rounded-full text-sm font-bold"
               >
                 Profile
               </Link>
-
+              <NotificationBell />
+              <button
+                // onClick={}
+                className="relative bg-egg border border-olive-light rounded-full p-2 shadow-sm hover:shadow-md transition"
+              >
+                <HiOutlineLogout className="w-5 h-5" />
+              </button>
             </div>
 
           </nav>
