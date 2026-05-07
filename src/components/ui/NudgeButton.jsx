@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function NudgeButton({ memberName, medName, onNudge, }) {
+export default function NudgeButton({ memberName, medName, onNudge }) {
   const [nudged, setNudged] = useState(false);
 
   const handle = () => {
@@ -19,7 +19,7 @@ export default function NudgeButton({ memberName, medName, onNudge, }) {
 
   return (
     <button
-      onClick={handle}
+      onClick={() => handle()}
       className={`
         flex-shrink-0
         flex items-center gap-1.5

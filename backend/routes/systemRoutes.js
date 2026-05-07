@@ -6,9 +6,11 @@ const summaryController = require('../controllers/summaryController')
 const { protect, authorize } = require('../middleware/auth');  // protect routes from unauthorized users
 
 // Notifications
-router.post('/notify-member', protect, authorize('Manager'), notificationController.notifyMember);
-router.post('/notify-family', protect, authorize('Manager'), notificationController.notifyFamily);
-router.delete('/delete/:id', protect, notificationController.removeNotif);
+router.post('/notify-member', notificationController.notifyMember);
+router.post('/notify-family', notificationController.notifyFamily);
+router.delete('/delete/:id', notificationController.removeNotif);
+router.get('/get-notif/:userId', notificationController.getNotifications);
+
 
 // Recent Activity
 router.get('/get-activity/:familyId', protect, activityController.getRecentActivity);
