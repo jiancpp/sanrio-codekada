@@ -139,7 +139,7 @@ export const FamilyStreakPanel = ({ members }) => {
             
             return (
               <div key={m._id} className="flex items-center gap-4">
-                <Avatar initial={m.initial} type={m.type} size="size-8" />
+                <Avatar initial={m.initial} type={m.avatar} size="size-8" />
                 <div className="flex-1">
                   <div className="flex justify-between items-end mb-1.5">
                     <span className="font-display font-black text-[13px]">

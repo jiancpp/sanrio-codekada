@@ -127,7 +127,7 @@ export const DailyLogPanel = ({ member }) => {
     <div className="flex flex-col gap-6 animate-fade-up">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <Avatar initial={member.initial} type={member.type} size="size-10" />
+        <Avatar initial={member.initial} type={member.avatar} size="size-10" />
         <div>
           <p className="font-display font-black text-sm uppercase">{member.name}'s Health Log</p>
           <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Real-time update</p>
