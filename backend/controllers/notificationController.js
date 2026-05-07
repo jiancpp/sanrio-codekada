@@ -14,7 +14,7 @@ exports.notifyMember = async (req, res) => {
   
       // emit to recipient user room
       const io = req.app.get("io");
-      io.to(to).emit("notification", notif);
+      io.to(familyCode).emit("notification", notif);
   
       res.status(201).json(notif);
     } catch (err) {
@@ -40,15 +40,14 @@ exports.notifyMember = async (req, res) => {
           from,
           to: memberId,   
           message,
-        });
-  
-        // emit per user
-        io.to(memberId.toString()).emit("notification", notif);
-  
+        });  
         return notif;
       });
   
-      await Promise.all(savePromises);
+      const notifications = await Promise.all(savePromises);
+      notifications.forEach((notif) => {
+        io.to(familyCode).emit("notification", notif);
+      });
   
       res.status(200).json({
         message: `Notifications sent to ${family.members.length} members.`,
@@ -89,8 +88,9 @@ exports.getNotifications = async (req, res) => {
       })
         .sort({ createdAt: -1 })
         .limit(6)
-        .populate("from", "name");
-  
+        .populate("from", "name")
+        .populate("to", "name");
+
       res.status(200).json(notifications);
     } catch (err) {
       res.status(500).json({ error: err.message });

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import socket from "../../hooks/socket"
 import { useApi } from "../../hooks/useApi"
+import { getTimeAgo } from "../../hooks/utils"
 import { useNavigate } from 'react-router';
 
 export const NotificationBell = () => {
@@ -9,13 +10,6 @@ export const NotificationBell = () => {
 
   const { getNotifications } = useApi();
   const navigate = useNavigate();
-
-  // temporary mock notifications
-  const mock_notifications = [
-    { id: 1, from: "Mama", text: "Medication reminder: Take Vitamin C", time: "10 min ago" },
-    { id: 2, from: "Papa", text: "Family update: New lab result uploaded", time: "2 hrs ago" },
-    { id: 3, from: "Lola", text: "Check-up due this week", time: "1 day ago" }
-  ];
 
   const getStoredUser = () => {
     try {
@@ -40,10 +34,15 @@ export const NotificationBell = () => {
       return;
     }
   
+    // JOIN ROOM
+    if (user.familyCode) {
+      socket.emit("join-family", user.familyCode);
+    }
+  
+    // INITIAL FETCH
     const fetchData = async () => {
       try {
         const data = await getNotifications(user.id);
-  
         setNotifications(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error(err);
@@ -51,20 +50,28 @@ export const NotificationBell = () => {
     };
   
     fetchData();
-  }, [navigate, getNotifications]);
-
-  // Socket listener (real-time updates)
-  useEffect(() => {
-    const handler = (newNotification) => {
-      setNotifications((prev) => [newNotification, ...prev]);
-    };
-
-    socket.on("notification", handler);
-
-    return () => {
-      socket.off("notification", handler);
-    };
+  
   }, []);
+
+  useEffect(() => {
+
+    const notificationHandler = (newNotification) => {
+      console.log("NEW NOTIFICATION:", newNotification);
+  
+      setNotifications((prev) => [
+        newNotification,
+        ...prev
+      ]);
+    };
+  
+    socket.on("notification", notificationHandler);
+  
+    return () => {
+      socket.off("notification", notificationHandler);
+    };
+  
+  }, []);
+
 
   return (
     <div className="relative">
@@ -94,9 +101,9 @@ export const NotificationBell = () => {
                 key={n.id}
                 className="px-4 pb-3 bg-white cursor-pointer transition"
               >
-                <span className="text-xs text-midnight font-bold mr-2">{n.from}</span>
-                <span className="text-xs text-mauve">{n.time}</span>
-                <p className="text-sm text-midnight">{n.text}</p>
+                <span className="text-xs text-midnight font-bold mr-2">{n.from?.name}</span>
+                <span className="text-xs text-mauve">{getTimeAgo(n.createdAt)}</span>
+                <p className="text-sm text-midnight">{n.message}</p>
               </div>
             ))}
           </div>

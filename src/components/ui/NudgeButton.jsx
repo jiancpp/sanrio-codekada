@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function NudgeButton({ memberName, medName, onNudge }) {
+export default function NudgeButton({ memberName, medName, onNudge, listenNudge }) {
   const [nudged, setNudged] = useState(false);
 
   const handle = () => {
@@ -8,6 +8,10 @@ export default function NudgeButton({ memberName, medName, onNudge }) {
 
     if (onNudge) {
       onNudge(memberName, medName);
+    }
+
+    if (listenNudge) {
+      listenNudge(true);
     }
 
     setTimeout(() => {

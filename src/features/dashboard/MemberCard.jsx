@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Avatar } from '../../components/ui/Avatar';
 import { DashboardCard } from './DashboardCard';
 import NudgeButton from '../../components/ui/NudgeButton';
@@ -6,8 +6,18 @@ import NudgeButton from '../../components/ui/NudgeButton';
 export const MemberCard = ({ member, selected, onClick, onNudge }) => {
   // const isWarning = !member.loggedToday && member.medsChecked.includes(false);
   const isWarning = !member.loggedToday;
+  const [nudged, setNudged] = useState(false);
 
   useEffect(() => {}, [selected]);
+
+  useEffect(() => {
+    if (!nudged) return;
+    if (!onNudge) return;
+
+    onNudge(member);
+
+    setNudged(false);
+  }, [nudged])
 
   return (
     <DashboardCard selected={selected} onClick={() => onClick(member)}>
@@ -39,7 +49,7 @@ export const MemberCard = ({ member, selected, onClick, onNudge }) => {
         </div>
 
         <div onClick={(e) => e.stopPropagation()} className="flex-shrink-0">
-          <NudgeButton memberName={member.name} />
+          <NudgeButton memberName={member.name} listenNudge={setNudged} />
         </div>
       </div>
 

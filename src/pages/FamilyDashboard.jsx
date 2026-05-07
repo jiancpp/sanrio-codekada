@@ -134,11 +134,24 @@ Join my family using this code: ${family?.familyCode}
   // NOT YET TESTED
   const handleNudge = async (memberNudged) => {
     if (memberNudged?.loggedToday) return;
+    if (memberNudged?._id === user?._id) return;
+    
+    console.log(user);
+    const messages = [
+      "Hey, how are you today? Don't forget your daily log 😊",
+      "Just checking in 💛 Hope you're doing okay today.",
+      "Hope everything's going well there 🏡",
+      "Your streak's looking good 🔥 Keep it up!",
+      "Just wanted to check in 🤍",
+      "Don't work too hard today ah 😊",
+      "Hope you've eaten already! Don't forget your log ✨",
+      "Checking if you're okay today 💌"
+    ];
 
-    let message = "Don't forget to save your daily log!"
+    const message = messages[Math.floor(Math.random() * messages.length)];
     const data = await remindMember({
       familyCode: family?.familyCode,
-      from: user?._id || null,
+      from: user?.id || null,
       to: memberNudged?._id,
       message
     })

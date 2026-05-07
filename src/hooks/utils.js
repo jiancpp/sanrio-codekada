@@ -112,3 +112,20 @@ export const buildAllMeds = (members) => {
     (a, b) => toMinutes(a.time) - toMinutes(b.time)
   );
 };
+
+export function getTimeAgo(timestamp) {
+  const date = new Date(timestamp);
+  const now = new Date();
+
+  const secondsDiff = Math.round((now - date) / 1000);
+  const minutesDiff = Math.round(secondsDiff/ 60);
+  const hoursDiff = Math.round(minutesDiff / 60);
+  const daysDiff = Math.round(hoursDiff / 24);
+
+  if (secondsDiff < 60) return "Just now";
+  if (minutesDiff < 60) return `${minutesDiff}m ago`;
+  if (hoursDiff < 24) return `${hoursDiff}h ago`;
+  if (daysDiff < 7) return `${daysDiff}d ago`;
+
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric'})
+} 
