@@ -14,7 +14,7 @@ export const MemberTabs = ({ members, selected, onSelect }) => (
           onClick={() => onSelect(m, i)}
           className={`flex items-center gap-2.5 px-4 py-2.5 rounded-full font-bold text-sm whitespace-nowrap transition-all duration-200 flex-shrink-0 border-2
             ${isSelected
-              ? 'bg-midnight text-egg border-midnight shadow-lg shadow-midnight/20'
+              ? 'bg-midnight text-egg border-midnight'
               : 'bg-white border-olive-light text-mauve hover:border-olive hover:text-midnight'
             }`}
         >
