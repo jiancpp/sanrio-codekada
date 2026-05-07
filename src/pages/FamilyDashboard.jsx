@@ -29,7 +29,7 @@ export default function FamilyDashboard() {
   const [members, setMembers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selected, setSelected] = useState(null);
-  const [activeTab, setActiveTab] = useState("streak"); // 'log' or 'streak'
+  const [activeTab, setActiveTab] = useState("log"); // 'log' or 'streak'
   const [copied, setCopied] = useState(false);
 
   const { getDailyLog, remindMember } = useApi();
