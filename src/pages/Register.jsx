@@ -5,14 +5,6 @@ import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router';
 import logo from '../assets/logo-olive-light.png';
 
-/* ── Utility ── */
-const generateCode = () => {
-  const words = ['PUSO', 'LAYA', 'BUHAY', 'TAHANAN', 'BIGAY', 'YAKAP', 'TULONG', 'LIGTAS'];
-  const word = words[Math.floor(Math.random() * words.length)];
-  const nums = Math.floor(100 + Math.random() * 900);
-  return `${word}-${nums}`;
-};
-
 /* ══════════════════════════════════════════════
    PROGRESS BAR
 ══════════════════════════════════════════════ */
@@ -50,13 +42,17 @@ const ProgressBar = ({ currentStep }) => {
    STEP 0 — ACCOUNT
 ══════════════════════════════════════════════ */
 const AccountStep = ({ onNext }) => {
-  const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '', rememberMe: false });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value
+    });
     setError('');
   };
 
@@ -138,12 +134,39 @@ const AccountStep = ({ onNext }) => {
           </div>
         </div>
 
+
+
         {/* Error */}
         {error && (
           <p className="text-xs text-coral-dark font-semibold flex items-center gap-1.5">
             <span>⚠️</span> {error}
           </p>
         )}
+
+        {/* Remember Me */}
+        <div className="flex items-center justify-between ml-2">
+          <label className="flex items-center gap-2 cursor-pointer group">
+            <div className="relative flex items-center justify-center">
+              <input
+                type="checkbox"
+                name="rememberMe"
+                checked={formData.rememberMe}
+                onChange={handleChange}
+                className="peer appearance-none w-5 h-5 border-2 border-olive-light rounded-md bg-white checked:bg-olive checked:border-olive transition-all cursor-pointer"
+              />
+              {/* Custom Checkmark Icon */}
+              <svg
+                className="absolute w-3 h-3 text-egg opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <span className="text-sm font-medium text-mauve group-hover:text-midnight transition-colors">
+              Remember me
+            </span>
+          </label>
+        </div>
 
         <button type="submit"
           className="w-full py-4 bg-midnight text-egg rounded-full font-bold text-[0.9375rem] border-none cursor-pointer transition-all mt-1 hover:bg-mauve hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(26,26,46,0.25)]">
@@ -507,13 +530,15 @@ const LeftPanel = ({ step }) => {
 /* ══════════════════════════════════════════════
    MAIN PAGE
 ══════════════════════════════════════════════ */
-const RegisterAndSetup = () => {
+const Register = () => {
   // step: 'account' | 'choose' | 'create' | 'join'
   const { register, error, isLoading } = useApi();
   const { login } = useAuth();
   const [step, setStep] = useState('account');
   const [user, setUser] = useState(null)
   const [temp, setTemp] = useState('')
+  const [rememberUser, setRememberUser] = useState(false);
+
   const navigate = useNavigate();
 
   // progress index: account=0, family steps=1, done=2
@@ -527,6 +552,7 @@ const RegisterAndSetup = () => {
     if (newUser) {
       setUser(newUser);
       setTemp(data.password);
+      setRememberUser(data.rememberMe); // Store the choice here
       setStep('choose');
     }
   };
@@ -535,9 +561,9 @@ const RegisterAndSetup = () => {
     const loggedInUser = await login({
       email: user.email,
       password: temp,
+      rememberMe: rememberUser, // Pass it to your auth hook!
     });
 
-    // If login is successful, redirect to dashboard
     if (loggedInUser) {
       navigate('/dashboard');
     }
@@ -568,4 +594,4 @@ const RegisterAndSetup = () => {
   );
 };
 
-export default RegisterAndSetup;
+export default Register;
