@@ -115,7 +115,7 @@ export default function FamilyMedications() {
     const target    = members.find(m => m.name === memberName);
 
     // Don't nudge yourself
-    // if (!target || String(target._id) === String(sender._id ?? sender.id)) return;
+    if (!target || String(target._id) === String(sender._id ?? sender.id)) return;
 
     const messages = [
         `Hey ${memberName}! Don't forget to take your ${medName} 💊`,
@@ -180,7 +180,7 @@ export default function FamilyMedications() {
         <div className="grid grid-cols-3 gap-3 mb-6">
           {STATS.map(({ label, value, topBorder, textColor }) => (
             <div key={label} className={`bg-white rounded-2xl px-5 py-4 border border-olive-light border-t-4 ${topBorder}`}>
-              <p className="text-[11px] text-gray-300 uppercase tracking-widest mb-1.5">{label}</p>
+              <p className="text-[11px] text-midnight-300 uppercase tracking-widest mb-1.5">{label}</p>
               <p className={`font-display font-black text-3xl ${textColor}`}>{value}</p>
             </div>
           ))}
