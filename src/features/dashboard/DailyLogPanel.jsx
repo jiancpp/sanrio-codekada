@@ -11,9 +11,9 @@ export const DailyLogPanel = ({ member }) => {
    * 
    *  check which day
    */
-  const { addLog, error, isLoading} = useApi();
-  const { 
-    mediaAttachments, uploading, handleMediaUpload, 
+  const { addLog, getDailyLog, error, isLoading } = useApi();
+  const {
+    mediaAttachments, uploading, handleMediaUpload,
     deleteMedia, resetMedia, setMedia,
     cropImageSrc, setCropImageSrc
   } = useMediaUpload(null, { multiple: false });  // Edit multiple later
@@ -32,29 +32,76 @@ export const DailyLogPanel = ({ member }) => {
   const [heartRate, setHeartRate] = useState('')
   const [bloodSugar, setBloodSugar] = useState('')
   const [waterIntake, setWaterIntake] = useState('')
-  
+  const [checkedMeds, setCheckedMeds] = useState({});
+
+  useEffect(() => {
+    const initializeForm = async () => {
+      if (!member._id) return;
+
+      const today = new Date().toISOString().split('T')[0];
+      const existingLog = await getDailyLog(member._id, today);
+
+      if (existingLog) {
+        setWeight(existingLog.vitals?.weight || '');
+        setBloodPressure(existingLog.vitals?.bloodPressure || '');
+        setHeartRate(existingLog.vitals?.heartRate || '');
+        setBloodSugar(existingLog.vitals?.bloodSugarLevel || '');
+        setWaterIntake(existingLog.waterIntake || '');
+
+        const medStatus = {};
+        existingLog.medsTaken?.forEach(med => {
+          medStatus[med.name] = med.status;
+        });
+        setCheckedMeds(medStatus);
+
+        if (existingLog.proofImage) {
+          setMedia({ url: existingLog.proofImage });
+        }
+      } else {
+        setWeight('');
+        setBloodPressure('');
+        setHeartRate('');
+        setBloodSugar('');
+        setWaterIntake('');
+        setCheckedMeds({});
+        resetMedia();
+      }
+    };
+
+    initializeForm();
+  }, [member?._id, getDailyLog]);
+
   // Logic for scheduling meds (Sample data)
-  const medSchedule = (med) =>{
+  const medSchedule = (med) => {
     if (med.day?.length !== 7) return null;
-    if (med.time?.length ===  0) return 'Every day';
+    if (med.time?.length === 0) return 'Every day';
     return `${med.time?.length}x a day`;
   };
 
   const handleSave = async () => {
+    const medsArray = Object.keys(checkedMeds).map(name => ({
+      name: name,
+      status: checkedMeds[name]
+    }));
+
     const data = await addLog({
+      userId: member._id,
+      familyCode: member.familyCode,
       vitals: {
         weight: weight,
         bloodPressure: bloodPressure,
         heartRate: heartRate,
         bloodSugarLevel: bloodSugar,
       },
-      medsTaken: [],  // fix forms 
+      medsTaken: medsArray,  // fix forms 
       waterIntake: waterIntake,
-      proofImage: mediaAttachments.url
+      proofImage: mediaAttachments.url || ""
     })
 
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 2000);
+    if (data) {
+      setIsSaved(true);
+      setTimeout(() => setIsSaved(false), 2000);
+    }
   };
 
   if (!member) return null;
@@ -80,7 +127,7 @@ export const DailyLogPanel = ({ member }) => {
           <LogInput label="Blood Sugar" value={bloodSugar} placeholder="95" unit="mg/dL" onChange={setBloodSugar} />
         </div>
         <div className="w-full">
-            <LogInput label="Water Intake" value={waterIntake} placeholder="0" unit="glasses" onChange={setWaterIntake} />
+          <LogInput label="Water Intake" value={waterIntake} placeholder="0" unit="glasses" onChange={setWaterIntake} />
         </div>
       </div>
 
@@ -90,7 +137,7 @@ export const DailyLogPanel = ({ member }) => {
           <p className="text-[11px] font-black text-gray-400 uppercase tracking-wider">Maintenance Meds</p>
           <span className="text-[9px] font-bold text-coral bg-coral-light px-2 py-0.5 rounded">Due Today</span>
         </div>
-        
+
         <div className="space-y-2">
           {member.maintenanceMeds?.map((med, i) => (
             <div key={i} className="group relative flex flex-col p-3 rounded-xl border border-olive-light bg-egg/20">
@@ -117,12 +164,12 @@ export const DailyLogPanel = ({ member }) => {
               <span className="text-lg">📸</span>
               <p className="text-[10px] text-gray-400 font-bold uppercase">Attach Image </p>
             </div>
-            <input 
-              type="file" 
-              className="hidden" 
+            <input
+              type="file"
+              className="hidden"
               accept="image/*,application/pdf"
               onChange={handleMediaUpload}
-              />
+            />
           </label>
           {mediaAttachments && (
             <div className="mt-3 relative group">
@@ -135,9 +182,9 @@ export const DailyLogPanel = ({ member }) => {
                       <span className="text-xs font-bold text-midnight truncate">
                         {mediaAttachments.name || "Medical Document.pdf"}
                       </span>
-                      <a 
-                        href={mediaAttachments.url} 
-                        target="_blank" 
+                      <a
+                        href={mediaAttachments.url}
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="text-[10px] text-olive font-bold uppercase tracking-wider hover:underline"
                       >
@@ -145,9 +192,9 @@ export const DailyLogPanel = ({ member }) => {
                       </a>
                     </div>
                   </div>
-                  
+
                   {/* Delete Button */}
-                  <button 
+                  <button
                     onClick={() => deleteMedia(mediaAttachments.url)}
                     className="p-1.5 bg-coral/10 text-coral rounded-lg hover:bg-coral hover:text-white transition-colors"
                   >
@@ -162,7 +209,7 @@ export const DailyLogPanel = ({ member }) => {
                     alt="upload"
                     className="w-full rounded-xl border border-olive-light"
                   />
-                  <button 
+                  <button
                     onClick={() => deleteMedia(mediaAttachments.url)}
                     className="absolute -top-2 -right-2 bg-coral text-white size-6 rounded-full flex items-center justify-center shadow-lg"
                   >
@@ -176,7 +223,7 @@ export const DailyLogPanel = ({ member }) => {
 
         <div className="space-y-2">
           <label className="text-[11px] font-black text-gray-400 uppercase tracking-wider">Additional Notes</label>
-          <textarea 
+          <textarea
             className="w-full bg-egg/30 border border-olive-light rounded-xl p-3 text-xs focus:outline-none focus:ring-2 focus:ring-olive/20 resize-none"
             placeholder="Describe symptoms or mood..."
             rows="2"
@@ -201,7 +248,7 @@ const LogInput = ({ label, placeholder, value, unit, onChange }) => (
   <div className="flex flex-col gap-1.5">
     <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">{label}</label>
     <div className="relative">
-      <input 
+      <input
         type="text"
         value={value}
         placeholder={placeholder}

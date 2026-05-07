@@ -13,7 +13,6 @@ const DailyLogSchema = new mongoose.Schema({
     date: {
         type: Date,
         required: true,
-        default: Date.now
     },
     vitals: {
         weight: Number,
@@ -33,5 +32,7 @@ const DailyLogSchema = new mongoose.Schema({
     notes: String,
     proofImage: String
 }, {timestamps: true});
+
+DailyLogSchema.index({ userId: 1, date: 1 }, { unique: true });
 
 module.exports = mongoose.model("DailyLog", DailyLogSchema);
