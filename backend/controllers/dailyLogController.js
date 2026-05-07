@@ -22,7 +22,6 @@ exports.createLog = async (req, res) => {
     try {
         const { userId } = req.body;
         const today = new Date().toISOString().split('T')[0];
-        console.log(today);
 
         // Look for user's log today -> update if log exists | create if not
         const log = await DailyLog.findOneAndUpdate(
@@ -39,8 +38,11 @@ exports.createLog = async (req, res) => {
                 await user.save();
             }
         }
+        
+        console.log(log);
+        console.log(log.value);
 
-        res.status(200).json(log.value);
+        res.status(200).json(log);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

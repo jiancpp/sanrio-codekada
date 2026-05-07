@@ -110,7 +110,7 @@ export const useApi = () => {
             }
 
             // We return data.value because of the rawResult: true in your controller
-            return data.value;
+            return data;
         } catch (err) {
             setError(err.message);
             return null;

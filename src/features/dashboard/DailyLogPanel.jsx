@@ -36,7 +36,7 @@ export const DailyLogPanel = ({ member }) => {
 
   useEffect(() => {
     const initializeForm = async () => {
-      if (!member._id) return;
+      if (!member?._id) return;
 
       const today = new Date().toISOString().split('T')[0];
       const existingLog = await getDailyLog(member._id, today);
@@ -55,7 +55,7 @@ export const DailyLogPanel = ({ member }) => {
         setCheckedMeds(medStatus);
 
         if (existingLog.proofImage) {
-          setMedia({ url: existingLog.proofImage });
+          setMedia({ url: existingLog.proofImage }); 
         }
       } else {
         setWeight('');
@@ -69,7 +69,7 @@ export const DailyLogPanel = ({ member }) => {
     };
 
     initializeForm();
-  }, [member?._id, getDailyLog]);
+  }, [member?._id]);
 
   // Logic for scheduling meds (Sample data)
   const medSchedule = (med) => {
@@ -95,8 +95,10 @@ export const DailyLogPanel = ({ member }) => {
       },
       medsTaken: medsArray,  // fix forms 
       waterIntake: waterIntake,
-      proofImage: mediaAttachments.url || ""
+      proofImage: mediaAttachments?.url || ""
     })
+
+    console.log(data);
 
     if (data) {
       setIsSaved(true);
