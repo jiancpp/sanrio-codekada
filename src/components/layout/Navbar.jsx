@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../../assets/logo.png';
+import { HiOutlineLogout } from "react-icons/hi";
 
 import NotificationBell from '../ui/NotificationBell';
 
@@ -81,14 +82,19 @@ export const Navbar = ({ variant = "public" }) => {
 
             {/* Right */}
             <div className="flex items-center gap-3">
-              <NotificationBell />
               <Link
                 to="/profile"
                 className="bg-midnight text-egg px-5 py-2 rounded-full text-sm font-bold"
               >
                 Profile
               </Link>
-
+              <NotificationBell />
+              <button
+                // onClick={}
+                className="relative bg-egg border border-olive-light rounded-full p-2 shadow-sm hover:shadow-md transition"
+              >
+                <HiOutlineLogout className="w-5 h-5" />
+              </button>
             </div>
 
           </nav>
