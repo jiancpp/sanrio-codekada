@@ -56,6 +56,8 @@ export default function FamilyDashboard() {
               initial: member.name.slice(0, 2).toUpperCase(),
               bp: dailyLog?.vitals.bloodPressure || null,
               hr: dailyLog?.vitals.heartRate || null,
+              bs: dailyLog?.vitals.bloodSugarLevel || null,
+              wi: dailyLog?.waterIntake || null,
             };
           })
         );
