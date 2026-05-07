@@ -17,27 +17,41 @@ export const NotificationBell = () => {
     { id: 3, from: "Lola", text: "Check-up due this week", time: "1 day ago" }
   ];
 
-  // getNotifications   const notifications = await getNotifications(familyCode) get from session token  
-  useEffect(() => {
-    const storedUserString = localStorage.getItem('user') || sessionStorage.getItem('user');
-    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-    
-    if (!storedUserString) {
-      navigate('/login');
+  const getStoredUser = () => {
+    try {
+      return JSON.parse(
+        localStorage.getItem("user") ||
+        sessionStorage.getItem("user")
+      );
+    } catch {
+      return null;
     }
-    const parsedUser = JSON.parse(storedUserString);
+  };
 
+  useEffect(() => {
+    const user = getStoredUser();
+  
+    const token =
+      localStorage.getItem("token") ||
+      sessionStorage.getItem("token");
+  
+    if (!user || !token) {
+      navigate("/login");
+      return;
+    }
+  
     const fetchData = async () => {
-      const data = await getNotifications(parsedUser.familyCode);
-
-      if (data) {
-        setNotifications(data);
+      try {
+        const data = await getNotifications(user.id);
+  
+        setNotifications(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error(err);
       }
     };
-
+  
     fetchData();
-  }, [getNotifications]);
-
+  }, [navigate, getNotifications]);
 
   // Socket listener (real-time updates)
   useEffect(() => {

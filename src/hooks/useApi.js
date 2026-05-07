@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { BASE_URL } from './constants';
 
 export const useApi = () => {
@@ -319,7 +319,7 @@ export const useApi = () => {
         }
     }
 
-    const getNotifications = async (userId) => {
+    const getNotifications = useCallback(async (userId) => {
         setIsLoading(true);
         setError(null);
 
@@ -344,7 +344,7 @@ export const useApi = () => {
         } finally {
             setIsLoading(false);
         }
-    }
+    }, []);
 
     /* ══════════════════════════════════════════════
         MEDICINES

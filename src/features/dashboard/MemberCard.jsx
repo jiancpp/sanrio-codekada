@@ -39,7 +39,7 @@ export const MemberCard = ({ member, selected, onClick, onNudge }) => {
         </div>
 
         <div onClick={(e) => e.stopPropagation()} className="flex-shrink-0">
-          <NudgeButton memberName={member.name} onNudge={onNudge} />
+          <NudgeButton memberName={member.name} />
         </div>
       </div>
 
