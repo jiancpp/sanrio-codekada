@@ -98,6 +98,9 @@ Join my family using this code: ${family?.familyCode}
                   initial: member.name.slice(0, 2).toUpperCase(),
                   bp: dailyLog?.vitals.bloodPressure || null,
                   hr: dailyLog?.vitals.heartRate || null,
+                  bs: dailyLog?.vitals.bloodSugarLevel || null,
+                  w: dailyLog?.vitals.weight || null,
+                  wi: dailyLog?.waterIntake || 0,
                 };
               })
             );
