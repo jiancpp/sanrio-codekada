@@ -15,7 +15,7 @@ const Notification = require('../models/Notification');
  */
 const initCronJobs = () => {
     // Streak reset at 00:00 (Midnight)
-    cron.schedule('0 0 * * *', async () => {
+    cron.schedule('* * * * *', async () => {
         const now = new Date();
         console.log(`[${now.toISOString()}] Cron Heartbeat: Starting streak reset...`);
         

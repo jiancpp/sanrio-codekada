@@ -12,49 +12,15 @@ import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../hooks/constants';
 import { getAge } from '../hooks/utils';
 
-// Sample Data
-const MEMBERS = [
-  {
-    id: 1, initial: "MA", name: "Mama", age: 58,
-    status: "BP logged · 1h ago", type: "olive",
-    streak: 12, loggedToday: true,
-    bp: "118/76", hr: "72", sugar: "98", weight: "62",
-    meds: ["Amlodipine 5mg", "Metformin 500mg"],
-    medsChecked: [true, true],
-    conditions: ["Hypertension", "Type 2 Diabetes"],
-    bloodType: "O+",
-  },
-  {
-    id: 2, initial: "PA", name: "Papa", age: 62,
-    status: "⚠️ Missed meds today", type: "jasmine",
-    streak: 5, loggedToday: false,
-    bp: "135/88", hr: "80", sugar: "112", weight: "78",
-    meds: ["Losartan 50mg", "Atorvastatin 20mg"],
-    medsChecked: [false, false],
-    conditions: ["Hypertension", "High Cholesterol"],
-    bloodType: "A+",
-  },
-  {
-    id: 3, initial: "KU", name: "Kuya", age: 30,
-    status: "Dubai · Logged today ✓", type: "coral",
-    streak: 7, loggedToday: true,
-    bp: "120/80", hr: "68", sugar: "90", weight: "74",
-    meds: ["Vitamin D 1000IU"],
-    medsChecked: [true],
-    conditions: [],
-    bloodType: "B+",
-  },
-  {
-    id: 4, initial: "SH", name: "Shielo", age: 25,
-    status: "Log today's vitals →", type: "mauve",
-    streak: 3, loggedToday: false,
-    bp: "—", hr: "—", sugar: "—", weight: "—",
-    meds: ["Ferrous Sulfate 325mg"],
-    medsChecked: [false],
-    conditions: ["Iron Deficiency Anemia"],
-    bloodType: "AB+",
-  },
-];
+import socket from '../hooks/socket';
+
+socket.on("connect", () => {
+  console.log("Socket connected:", socket.id);
+});
+
+socket.on("connect_error", (err) => {
+  console.log("Socket connection error:", err.message);
+});
 
 export default function FamilyDashboard() {
   // =========== Frontend Variables ================== //
@@ -81,6 +47,13 @@ Join my family using this code: ${family?.familyCode}
   const [family, setFamily] = useState(null);
   const [members, setMembers] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // to prevent page crash
+
+  // Allow real time updates from family
+  useEffect(() => {
+    if (family?.familyCode) {
+      socket.emit("join-family", family.familyCode);
+    }
+  }, [family]);
 
   useEffect (() => {
     const storedUserString = localStorage.getItem('user') || sessionStorage.getItem('user');
@@ -112,8 +85,7 @@ Join my family using this code: ${family?.familyCode}
 
             setFamily(data);
             setMembers(updatedMembers);
-            setSelected(updatedMembers[0]);
-            // console.log(updatedMembers)
+            setSelected((prev) => prev || updatedMembers[0]); 
           } else {
             console.error("Backend error:", data.message);
           }
@@ -124,7 +96,16 @@ Join my family using this code: ${family?.familyCode}
           setIsLoading(false); // Stop the loading spinner
         }
       }
+      
       fetchMembers();
+
+      socket.on("daily-log-updated", () => {
+        fetchMembers();
+      });
+    
+      return () => {
+        socket.off("daily-log-updated");
+      };
 
     } else {
       navigate('/login')
@@ -228,3 +209,49 @@ Join my family using this code: ${family?.familyCode}
     </div>
   );
 }
+
+
+
+// Sample Data
+const MEMBERS = [
+  {
+    id: 1, initial: "MA", name: "Mama", age: 58,
+    status: "BP logged · 1h ago", type: "olive",
+    streak: 12, loggedToday: true,
+    bp: "118/76", hr: "72", sugar: "98", weight: "62",
+    meds: ["Amlodipine 5mg", "Metformin 500mg"],
+    medsChecked: [true, true],
+    conditions: ["Hypertension", "Type 2 Diabetes"],
+    bloodType: "O+",
+  },
+  {
+    id: 2, initial: "PA", name: "Papa", age: 62,
+    status: "⚠️ Missed meds today", type: "jasmine",
+    streak: 5, loggedToday: false,
+    bp: "135/88", hr: "80", sugar: "112", weight: "78",
+    meds: ["Losartan 50mg", "Atorvastatin 20mg"],
+    medsChecked: [false, false],
+    conditions: ["Hypertension", "High Cholesterol"],
+    bloodType: "A+",
+  },
+  {
+    id: 3, initial: "KU", name: "Kuya", age: 30,
+    status: "Dubai · Logged today ✓", type: "coral",
+    streak: 7, loggedToday: true,
+    bp: "120/80", hr: "68", sugar: "90", weight: "74",
+    meds: ["Vitamin D 1000IU"],
+    medsChecked: [true],
+    conditions: [],
+    bloodType: "B+",
+  },
+  {
+    id: 4, initial: "SH", name: "Shielo", age: 25,
+    status: "Log today's vitals →", type: "mauve",
+    streak: 3, loggedToday: false,
+    bp: "—", hr: "—", sugar: "—", weight: "—",
+    meds: ["Ferrous Sulfate 325mg"],
+    medsChecked: [false],
+    conditions: ["Iron Deficiency Anemia"],
+    bloodType: "AB+",
+  },
+];

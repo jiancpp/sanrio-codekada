@@ -4,25 +4,12 @@ import { useApi } from '../../hooks/useApi';
 import { useMediaUpload } from '../../hooks/useMediaUpload';
 
 export const DailyLogPanel = ({ member }) => {
-  /**
-   * NEED:
-   *  get daily log by member id and date today
-   *  create/update daily log today - /add
-   * 
-   *  check which day
-   */
   const { addLog, getDailyLog, error, isLoading } = useApi();
   const {
     mediaAttachments, uploading, handleMediaUpload,
     deleteMedia, resetMedia, setMedia,
     cropImageSrc, setCropImageSrc
   } = useMediaUpload(null, { multiple: false });  // Edit multiple later
-
-  // Delete this later?
-  useEffect(() => {
-    // console.log("mediaAttachments:", mediaAttachments); 
-  }, [mediaAttachments]);
-
 
   const [isSaved, setIsSaved] = useState(false);
 
@@ -36,27 +23,41 @@ export const DailyLogPanel = ({ member }) => {
   const [checkedMeds, setCheckedMeds] = useState({});
 
   useEffect(() => {
+    let cancelled = false;
+  
     const initializeForm = async () => {
       if (!member?._id) return;
-
+  
+      resetMedia();
+  
       const today = new Date().toISOString().split('T')[0];
       const existingLog = await getDailyLog(member._id, today);
-
+  
+      if (cancelled) return;
+  
       if (existingLog) {
         setWeight(existingLog.vitals?.weight || '');
         setBloodPressure(existingLog.vitals?.bloodPressure || '');
         setHeartRate(existingLog.vitals?.heartRate || '');
         setBloodSugar(existingLog.vitals?.bloodSugarLevel || '');
         setWaterIntake(existingLog.waterIntake || '');
-
+  
         const medStatus = {};
+  
         existingLog.medsTaken?.forEach(med => {
           medStatus[med.name] = med.status;
         });
+  
         setCheckedMeds(medStatus);
-
+  
         if (existingLog.proofImage) {
-          setMedia({ url: existingLog.proofImage }); 
+          setMedia({
+            file: null,
+            url: existingLog.proofImage,
+            preview: existingLog.proofImage,
+            isPDF: false,
+            name: ''
+          });
         }
       } else {
         setWeight('');
@@ -65,11 +66,14 @@ export const DailyLogPanel = ({ member }) => {
         setBloodSugar('');
         setWaterIntake('');
         setCheckedMeds({});
-        resetMedia();
       }
     };
-
+  
     initializeForm();
+  
+    return () => {
+      cancelled = true;
+    };
   }, [member?._id]);
 
   // Logic for scheduling meds (Sample data)
@@ -226,6 +230,13 @@ export const DailyLogPanel = ({ member }) => {
                 </div>
               )}
             </div>
+          )}
+          {uploading && (
+            // @Shielo @Jess Don't know how to style this
+            <p className="text-xs text-mauve flex items-center gap-1.5">
+              <span className="inline-block w-3 h-3 border-2 border-olive border-t-transparent rounded-full animate-spin" />
+              Uploading File...
+            </p>
           )}
         </div>
 

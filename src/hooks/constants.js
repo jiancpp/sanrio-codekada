@@ -6,3 +6,8 @@ export const BASE_URL = import.meta.env.PROD
 : 'http://localhost:5001/api';
 
 export const MAX_LOGIN_ATTEMPTS = 3;
+
+
+export const SOCKET_URL = import.meta.env.PROD 
+? '/'
+: 'http://localhost:5001';

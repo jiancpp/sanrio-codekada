@@ -1,9 +1,14 @@
+import { useEffect } from 'react';
 import { Avatar } from '../../components/ui/Avatar';
 import { DashboardCard } from './DashboardCard';
 
 export const MemberCard = ({ member, selected, onClick }) => {
   // const isWarning = !member.loggedToday && member.medsChecked.includes(false);
   const isWarning = !member.loggedToday;
+
+  useEffect(() => {
+    
+  }, [selected])
 
   return (
     <DashboardCard selected={selected} onClick={() => onClick(member)}>

@@ -23,7 +23,8 @@
     "react-bootstrap-icons": "^1.11.6",
     "react-dom": "^19.2.5",
     "react-router-dom": "^7.14.2",
-    "socket.io": "^4.8.3"
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

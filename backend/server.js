@@ -47,9 +47,13 @@ mongoose.connect(process.env.MONGO_URI)
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
-  socket.on('join', (data) => {
-    socket.join(data.userId);      // Private room
-    socket.join(data.familyCode);  // Family-wide room
+  socket.on('join', (userId) => {
+    socket.join(userId);      // Private room
+  });
+
+  socket.on('join-family', (familyCode) => {
+    socket.join(familyCode);      // Family room
+    console.log(`Joined family room: ${familyCode}`);
   });
 
   socket.on('disconnect', () => {

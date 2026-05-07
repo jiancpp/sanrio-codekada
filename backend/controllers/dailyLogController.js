@@ -44,6 +44,12 @@ exports.createLog = async (req, res) => {
             }
         }
 
+        // get io instance
+        const io = req.app.get('io');
+
+        // emit update
+        io.to(log.familyCode).emit("daily-log-updated");
+
         res.status(200).json(log);
     } catch (err) {
         res.status(500).json({ error: err.message });
