@@ -94,24 +94,29 @@ export const timeStatus = (scheduleStr, taken) => {
   return "upcoming";
 };
 
-export const buildAllMeds = (members) => {
-  const flat = [];
-
-  members.forEach((member) => {
-    member.medsTaken.forEach((med, i) => {
-      flat.push({
-        ...med,
-        member,
-        medIndex: i,
-        status: timeStatus(med.time, med.status),
-      });
-    });
-  });
-
-  return flat.sort(
-    (a, b) => toMinutes(a.time) - toMinutes(b.time)
+export function buildAllMeds(members) {
+  const flat = members.flatMap(member =>
+    (member.medsTaken ?? []).map(med => ({
+      name:   med.name,
+      time:   med.time  ?? '—',
+      note:   med.note  ?? 'As prescribed',
+      status: timeStatus(med.time, med.status), // "taken"|"soon"|"overdue"|"upcoming"
+      member,                                 
+    }))
   );
-};
+ 
+  // Sort chronologically
+  flat.sort((a, b) => {
+    const tA = toMinutes(a.time);
+    const tB = toMinutes(b.time);
+    if (tA !== tB) return tA - tB;
+    const doneA = a.status === 'taken' ? 1 : 0;
+    const doneB = b.status === 'taken' ? 1 : 0;
+    return doneA - doneB;
+  });
+ 
+  return flat;
+}
 
 export function getTimeAgo(timestamp) {
   const date = new Date(timestamp);
