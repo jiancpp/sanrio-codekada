@@ -1,8 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const http = require('http'); // 1. Import http
-const { Server } = require('socket.io'); // 2. Import Socket.io
+const http = require('http'); 
+const { Server } = require('socket.io'); 
 const socketService = require('./services/socketService');
 require('dotenv').config();
 
@@ -13,7 +13,7 @@ const CLIENT_URL = process.env.NODE_ENV === 'production'
   : 'http://localhost:5173';
 
 const app = express()
-const server = http.createServer(app); // 3. Create the HTTP server
+const server = http.createServer(app); // Create the HTTP server
 
 // Initialize Socket.io
 const io = new Server(server, {
@@ -25,7 +25,11 @@ const io = new Server(server, {
 socketService.init(io);
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: CLIENT_URL,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-system-key'] // <--- Add your custom headers here!
+}));
 app.use(express.json());
 
 // DB Connection

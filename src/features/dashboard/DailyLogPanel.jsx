@@ -20,7 +20,7 @@ export const DailyLogPanel = ({ member }) => {
 
   // Delete this later?
   useEffect(() => {
-    console.log("mediaAttachments:", mediaAttachments); 
+    // console.log("mediaAttachments:", mediaAttachments); 
   }, [mediaAttachments]);
 
 

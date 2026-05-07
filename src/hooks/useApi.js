@@ -88,6 +88,31 @@ export const useApi = () => {
             setIsLoading(false);
         }
     }
+    /* ══════════════════════════════════════════════
+        FAMILY
+        ══════════════════════════════════════════════ */
+    const getFamilyMembers = async ({ familyCode, token }) => {
+        try {
+            const response = await fetch(`${BASE_URL}/family/get/${familyCode}`, {
+                method: 'GET',
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+            })
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Failed to fetch members');
+            }
+
+            return data.members; // Return family members to the component
+
+        } catch (err) {
+            setError(err.message);
+            return [];
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
     /* ══════════════════════════════════════════════
         DAILY LOG FUNCTIONS
@@ -189,7 +214,6 @@ export const useApi = () => {
             });
 
             const data = await response.json();
-            console.log(data)
 
             if (!response.ok) {
                 throw new Error(data.error || 'Failed to get family streak');
@@ -241,6 +265,7 @@ export const useApi = () => {
         register,
         createFamily,
         joinFamily,
+        getFamilyMembers,
         addLog,
         getFamilyLogs,
         getFamilyStreak,

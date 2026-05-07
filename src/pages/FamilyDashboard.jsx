@@ -113,7 +113,7 @@ Join my family using this code: ${family?.familyCode}
             setFamily(data);
             setMembers(updatedMembers);
             setSelected(updatedMembers[0]);
-            console.log(updatedMembers)
+            // console.log(updatedMembers)
           } else {
             console.error("Backend error:", data.message);
           }

@@ -34,9 +34,9 @@ const getLoggedDays = (logs, weekStart) => {
 };
 
 export const FamilyStreakPanel = ({ members }) => {
-  const { getFamilyLogs, getFamilyStreak, error, isLoading} = useApi();
+  const { getFamilyLogs, getFamilyStreak, getFamilyMembers, error, isLoading} = useApi();
   const [familyStreak, setFamilyStreak] = useState(0);
-  // const [familyLogs, setFamilyLogs] = useState([]);
+  const [memberStreaks, setMemberStreaks] = useState({});
   const [loggedDays, setLoggedDays] = useState([])
   const navigate = useNavigate()
   
@@ -57,20 +57,26 @@ export const FamilyStreakPanel = ({ members }) => {
   useEffect(() => {
     const storedUserString = localStorage.getItem('user') || sessionStorage.getItem('user');
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-
+    
     if (!storedUserString) {
       navigate('/login');
     }
     const parsedUser = JSON.parse(storedUserString);
     const fetchFamilyStreak = async () => {
-      const [streakData, logsData] = await Promise.all([
+      const [streakData, logsData, members] = await Promise.all([
         getFamilyStreak(parsedUser.familyCode),
-        getFamilyLogs(parsedUser.familyCode, {weekStart, weekEnd})
+        getFamilyLogs(parsedUser.familyCode, {weekStart, weekEnd}),
+        getFamilyMembers({ familyCode: parsedUser.familyCode, token })
       ]);
 
+      let streaks = {}
+      members.map(m => {
+        streaks[m.name] = m.streak;
+      })
+
       setFamilyStreak(streakData.familyStreak);
-      // setFamilyLogs(logsData);
       setLoggedDays(getLoggedDays(logsData, weekStart))
+      setMemberStreaks(streaks);
     }
     fetchFamilyStreak();
 
@@ -124,7 +130,7 @@ export const FamilyStreakPanel = ({ members }) => {
         <div className="space-y-4">
           {members.map((m) => {
             // Calculate progress percentage (mock logic: streak out of 14 days)
-            const progress = Math.min(100, (m.streak / 14) * 100);
+            const progress = Math.min(100, ((memberStreaks[m.name] || 0) / 14) * 100);
             
             return (
               <div key={m._id} className="flex items-center gap-4">
@@ -135,14 +141,14 @@ export const FamilyStreakPanel = ({ members }) => {
                       {m.name}
                     </span>
                     <span className="text-[10px] font-bold text-coral">
-                      {m.streak}d 🔥
+                      {memberStreaks[m.name] || 0}d 🔥
                     </span>
                   </div>
                   {/* Progress Bar Container */}
                   <div className="h-1.5 w-full bg-egg rounded-full overflow-hidden">
                     <div
                       className={`h-full rounded-full transition-all duration-1000 ${
-                        m.streak >= 7 ? "bg-olive" : "bg-jasmine"
+                        (memberStreaks[m.name] || 0) >= 7 ? "bg-olive" : "bg-jasmine"
                       }`}
                       style={{ width: `${progress}%` }}
                     />
