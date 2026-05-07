@@ -1,4 +1,4 @@
-export const Avatar = ({ initial, type, size = "size-11" }) => {
+export const Avatar = ({ initial, type, size = "size-11 text-sm" }) => {
   const variants = {
     olive: "bg-olive-light text-olive-dark",
     jasmine: "bg-jasmine-light text-jasmine-dark",
@@ -7,7 +7,7 @@ export const Avatar = ({ initial, type, size = "size-11" }) => {
   };
 
   return (
-    <div className={`${size} rounded-full flex items-center justify-center font-display font-black text-sm shrink-0 ${variants[type] || variants.olive}`}>
+    <div className={`${size} rounded-full flex items-center justify-center font-display font-black shrink-0 ${variants[type] || variants.olive}`}>
       {initial}
     </div>
   );
