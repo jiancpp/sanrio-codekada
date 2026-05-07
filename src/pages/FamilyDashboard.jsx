@@ -54,6 +54,7 @@ export default function FamilyDashboard() {
               ...member,
               age: getAge(new Date(member.birthdate)) || 'N/A',
               initial: member.name.slice(0, 2).toUpperCase(),
+              w: dailyLog?.vitals.weight || null,
               bp: dailyLog?.vitals.bloodPressure || null,
               hr: dailyLog?.vitals.heartRate || null,
               bs: dailyLog?.vitals.bloodSugarLevel || null,
