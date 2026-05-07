@@ -81,7 +81,7 @@ export const Navbar = ({ variant = "public" }) => {
             <div className="hidden md:flex gap-8 text-sm font-bold text-mauve">
               <Link to="/dashboard" className="hover:text-olive">Dashboard</Link>
               <Link to="/medications" className="hover:text-olive">Medication</Link>
-              <Link to="/family-calendar" className="hover:text-olive">Calendar</Link>
+              <Link to="/history" className="hover:text-olive">History</Link>
             </div>
 
             {/* Right */}
