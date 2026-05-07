@@ -97,8 +97,6 @@ export const TagList = ({ items = [], editing, onAdd, onRemove, placeholder, col
 };
 
 // ─── MEDLIST ──────────────────────────────────────────────────
-// Schema shape: { name: String, days: [String], time: [String] }
-// time is an array to support multiple times per day (e.g. ["08:00", "20:00"])
 
 const DAY_LABELS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
 
@@ -137,7 +135,6 @@ export const MedList = ({ meds = [], editing, onAdd, onRemove, onChange }) => {
     const updated = currentDays.includes(day)
       ? currentDays.filter(d => d !== day)
       : [...currentDays, day];
-
     onChange(i, "days", updated);
   };
 
@@ -145,14 +142,16 @@ export const MedList = ({ meds = [], editing, onAdd, onRemove, onChange }) => {
     const updated = newMed.days.includes(day)
       ? newMed.days.filter(d => d !== day)
       : [...newMed.days, day];
-
     setNewMed(m => ({ ...m, days: updated }));
   };
+
+  const updateNotes = (i, val) => onChange(i, "notes", val);
+  const updateNewNotes = (val) => setNewMed(m => ({ ...m, notes: val }));
 
   return (
     <div className="flex flex-col gap-3">
 
-      {/* ── Existing meds ───────────────────────────── */}
+      {/* ── Existing meds ── */}
       {meds.map((med, i) => (
         <div key={i} className="bg-white border border-olive-light rounded-2xl p-4 flex gap-4 items-start">
 
@@ -167,7 +166,15 @@ export const MedList = ({ meds = [], editing, onAdd, onRemove, onChange }) => {
                   className="w-full bg-egg border border-olive rounded-lg px-3 py-1.5 font-bold text-sm"
                 />
 
-                {/* DAYS (RESTORED) */}
+                {/* NOTES */}
+                <input
+                  value={med.notes || ""}
+                  onChange={e => updateNotes(i, e.target.value)}
+                  placeholder="Instructions / notes (e.g. after meals)"
+                  className="w-full bg-egg border border-olive-light rounded-lg px-3 py-1.5 text-xs text-mauve"
+                />
+
+                {/* DAYS */}
                 <div>
                   <p className="text-[9px] font-black uppercase text-gray-400 mb-1">
                     Days
@@ -214,12 +221,15 @@ export const MedList = ({ meds = [], editing, onAdd, onRemove, onChange }) => {
               <>
                 <p className="font-black text-sm">{med.name}</p>
 
-                {/* DAYS DISPLAY */}
+                {/* NOTES DISPLAY */}
+                {med.notes && (
+                  <p className="text-[11px] text-mauve/70">{med.notes}</p>
+                )}
+
                 <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
                   {med.days?.length ? med.days.join(" • ") : "No days set"}
                 </p>
 
-                {/* TIMES DISPLAY */}
                 <div className="flex flex-wrap gap-2 mt-1">
                   {(med.time ?? []).map(t => (
                     <span
@@ -242,7 +252,7 @@ export const MedList = ({ meds = [], editing, onAdd, onRemove, onChange }) => {
         </div>
       ))}
 
-      {/* ── NEW MED ───────────────────────────── */}
+      {/* ── NEW MED ── */}
       {editing && (
         <div className="border border-dashed border-olive-light p-4 rounded-2xl space-y-3">
 
@@ -253,7 +263,15 @@ export const MedList = ({ meds = [], editing, onAdd, onRemove, onChange }) => {
             className="w-full border p-2 rounded"
           />
 
-          {/* DAYS (RESTORED) */}
+          {/* NOTES */}
+          <input
+            value={newMed.notes || ""}
+            onChange={e => updateNewNotes(e.target.value)}
+            placeholder="Instructions / notes"
+            className="w-full border border-olive-light p-2 rounded text-xs"
+          />
+
+          {/* DAYS */}
           <div>
             <p className="text-[9px] font-black uppercase text-gray-400 mb-1">
               Days
@@ -283,7 +301,10 @@ export const MedList = ({ meds = [], editing, onAdd, onRemove, onChange }) => {
 
             <div className="flex flex-wrap gap-1.5">
               {newMed.time.map(t => (
-                <span key={t} className="bg-midnight text-egg px-2 py-0.5 rounded-full text-[10px]">
+                <span
+                  key={t}
+                  className="bg-midnight text-egg px-2 py-0.5 rounded-full text-[10px]"
+                >
                   {t}
                   <button onClick={() => removeNewTime(t)}>×</button>
                 </span>
