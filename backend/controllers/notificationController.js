@@ -13,7 +13,7 @@ exports.notifyMember = async(req, res) => {
 
         // Emit the event to that specific user's room
         const io = req.app.get('io');
-        io.to(member).emit('new_notification', notif);
+        io.to(member).emit('notification');
 
         res.status(201).json(notif);
     } catch (err) {
@@ -23,25 +23,22 @@ exports.notifyMember = async(req, res) => {
 
 exports.notifyFamily = async(req, res) => {
     try {
-        const { familyCode, message } = req.body;
+        const { familyCode, userId, message } = req.body;
         const family = await Family.findOne({familyCode: familyCode});
 
         if (!family) {
             return res.status(403).json({ message: "Family record not found" })
         }
 
-        const savePromises = family.members.map(member => {
-            const notif = new Notification({ familyCode, member, message });
-
-            // Emit the event to that specific user's room
-            const io = req.app.get('io');
-            io.to(member).emit('new_notification', notif);
-
-            return notif.save(); 
+        const notif = await Notification.create({
+            familyCode,
+            from: userId,
+            message,
         });
-        
-        // Waits for ALL of them to finish at the same time
-        await Promise.all(savePromises);
+    
+        const io = req.app.get("io");
+        io.to(familyCode).emit("notification", notif);
+      
         res.status(200).json({ message: `Notifications sent to ${family.members.length} members.` });
 
     } catch (err) {
