@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { VitalChip, MedBadge } from '../../components/ui/HealthChips';
-import { fmt } from '../../hooks/utils';
 
 const MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+const fmt = (val, unit = '') =>
+  (val !== null && val !== undefined && val !== '') ? `${val}${unit}` : '—';
 
 export const LogCard = ({ log }) => {
   const [expanded, setExpanded] = useState(false);
