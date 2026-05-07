@@ -27,6 +27,7 @@ const UserSchema = new mongoose.Schema({
 
     streak: { type: Number, default: 0 },
     loggedToday: { type: Boolean, default: false },
+    lastLogDate: { type: Date, default: null },
     finishedAccountSetup: { type: Boolean, default: false }
 });
 

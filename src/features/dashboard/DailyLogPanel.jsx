@@ -18,8 +18,9 @@ export const DailyLogPanel = ({ member }) => {
     cropImageSrc, setCropImageSrc
   } = useMediaUpload(null, { multiple: false });  // Edit multiple later
 
+  // Delete this later?
   useEffect(() => {
-    console.log("mediaAttachments:", mediaAttachments);
+    console.log("mediaAttachments:", mediaAttachments); 
   }, [mediaAttachments]);
 
 
@@ -97,8 +98,6 @@ export const DailyLogPanel = ({ member }) => {
       waterIntake: waterIntake,
       proofImage: mediaAttachments?.url || ""
     })
-
-    console.log(data);
 
     if (data) {
       setIsSaved(true);

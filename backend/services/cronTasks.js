@@ -1,6 +1,7 @@
 const cron = require('node-cron');
 const { getIO } = require('./socketService');
 const User = require('../models/User');
+const DailyLog = require('../models/DailyLog')
 const Notification = require('../models/Notification');
 
 /**
@@ -19,24 +20,26 @@ const initCronJobs = () => {
         console.log(`[${now.toISOString()}] Cron Heartbeat: Starting streak reset...`);
         
         try {
-            const manilaTime = new Intl.DateTimeFormat('en-US', {
-                timeZone: 'Asia/Manila',
-                year: 'numeric',
-                month: 'numeric',
-                day: 'numeric'
-            }).format(new Date());
-            
-            const todayPH = new Date(manilaTime);
-            todayPH.setHours(0, 0, 0, 0);
-
-            console.log(`Checking for logs before: ${todayPH.toISOString()}`);
-
+            // Calculate the 24-hour window from right now (10:30 AM)
+            const twentyFourHoursAgo = new Date(now.getTime() - (24 * 60 * 60 * 1000));
+            console.log(twentyFourHoursAgo)
+    
+            // Find IDs of users who DID submit a log in the last 24 hours
+            const activeUsers = await DailyLog.distinct('userId', {
+                createdAt: { $gte: twentyFourHoursAgo }
+            });
+    
+            // Reset streaks for users who are NOT in the active list
+            // and currently have a streak > 0
             const result = await User.updateMany(
-                { lastLogDate: { $lt: todayPH } },
-                { $set: { currentStreak: 0 } }
+                { 
+                    _id: { $nin: activeUsers }, // Not in the "active" list
+                    streak: { $gt: 0 }          // Only bother if they have a streak to reset
+                },
+                { $set: { streak: 0, loggedToday: false } }
             );
-
-            console.log('Streaks updated successfully.');
+    
+            console.log(`Streaks updated: ${result.modifiedCount} users reset to 0.`);
         } catch (err) {
             console.error('Error in cron job:', err);
         }

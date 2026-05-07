@@ -21,26 +21,28 @@ const toPHDate = (rawDate) => {
 exports.createLog = async (req, res) => {
     try {
         const { userId } = req.body;
-        const today = new Date().toISOString().split('T')[0];
+        const now = new Date();
+        const today = now.toISOString().split('T')[0];
 
         // Look for user's log today -> update if log exists | create if not
+        const existingLog = await DailyLog.findOne({ userId, date: today });
+
         const log = await DailyLog.findOneAndUpdate(
             { userId, date: today },
             { $set: { ...req.body, date: today } },
-            { upsert: true, new: true, runValidators: true, rawResult: true }
+            { upsert: true, returnDocument: 'after', runValidators: true }
         );
 
-        if (!log.lastErrorObject?.updatedExisting) {
+        if (!existingLog) {
             const user = await User.findById(userId);
             
             if (user) {
                 user.streak = (user.streak || 0) + 1;
+                user.lastLogDate = now;
+                user.loggedToday = true;
                 await user.save();
             }
         }
-        
-        console.log(log);
-        console.log(log.value);
 
         res.status(200).json(log);
     } catch (err) {
