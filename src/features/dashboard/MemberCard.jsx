@@ -26,8 +26,8 @@ export const MemberCard = ({ member, selected, onClick }) => {
       <p className="text-xs text-mauve mb-3 leading-relaxed">{member.status}</p>
 
       <div className="grid grid-cols-2 gap-2">
-        <VitalBox label="BP" value={member.bp} color="border-coral" />
-        <VitalBox label="HR" value={member.hr} color="border-olive" />
+        <VitalBox label="BP" value={member.bp || '—' } color="border-coral" />
+        <VitalBox label="HR" value={member.hr || '—'} color="border-olive" />
       </div>
     </DashboardCard>
   );

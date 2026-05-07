@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import logo from '../../assets/logo.png';
 import { HiOutlineLogout } from "react-icons/hi";
 
 import NotificationBell from '../ui/NotificationBell';
 
 export const Navbar = ({ variant = "public" }) => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
   const isLoggedIn = variant === "auth";
@@ -37,7 +39,9 @@ export const Navbar = ({ variant = "public" }) => {
                 <a href="#who" className="hover:text-olive">Who it's for</a>
               </div>
 
-              <button className="bg-midnight text-egg px-6 py-2.5 rounded-full font-bold text-sm">
+              <button
+                onClick={() => navigate('/register')}
+                className="bg-midnight text-egg px-6 py-2.5 rounded-full font-bold text-sm hover:-translate-y-0.5 hover:cursor-pointer active:scale-95 transition-all">
                 Get Started
               </button>
             </div>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { PeopleFill, GlobeAmericas, HeartFill, ShieldLockFill, EyeFill, EyeSlashFill, PersonFill } from 'react-bootstrap-icons';
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
+import logo from '../assets/logo-olive-light.png';
 
 const Login = () => {
   // Backend Connection
@@ -24,14 +25,14 @@ const Login = () => {
     e.preventDefault();
     console.log(formData);
 
-    const user = await login({ 
-      email: formData.email, 
-      password: formData.password 
+    const user = await login({
+      email: formData.email,
+      password: formData.password
     });
 
     // If login is successful, redirect to dashboard
     if (user) {
-      navigate('/dashboard'); 
+      navigate('/dashboard');
     }
   };
 
@@ -49,6 +50,11 @@ const Login = () => {
         <div className="relative z-10 max-w-[480px] w-full">
           {/* Logo */}
           <a href="/" className="inline-flex items-center gap-2 mb-12 no-underline">
+            <img
+              src={logo}
+              alt="TalaCare Logo"
+              className="h-8 w-auto object-contain transition-transform group-hover:scale-110"
+            />
             <span className="font-display font-black text-[1.75rem] text-egg tracking-tight">TalaCare</span>
             <span className="w-2 h-2 rounded-full bg-coral" />
           </a>
@@ -66,9 +72,9 @@ const Login = () => {
           {/* Floating feature cards */}
           <div className="flex flex-col gap-3.5">
             {[
-              { icon: <PeopleFill/>, title: 'Family First', sub: 'Health sync for everyone', delay: '0s' },
-              { icon: <GlobeAmericas/>, title: 'Works Anywhere', sub: 'At Home,', delay: '0.2s' },
-              { icon: <HeartFill/>, title: '100% Free', sub: 'No hidden fees, ever', delay: '0.4s' },
+              { icon: <PeopleFill />, title: 'Family First', sub: 'Health sync for everyone', delay: '0s' },
+              { icon: <GlobeAmericas />, title: 'Works Anywhere', sub: 'At Home,', delay: '0.2s' },
+              { icon: <HeartFill />, title: '100% Free', sub: 'No hidden fees, ever', delay: '0.4s' },
             ].map(({ icon, title, sub, delay }) => (
               <div
                 key={title}
@@ -105,16 +111,16 @@ const Login = () => {
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             {error && (
-                <div className="mb-4 p-3 bg-coral text-white text-sm rounded-lg text-center">
-                    {error}
-                </div>
+              <div className="mb-4 p-3 bg-coral text-white text-sm rounded-lg text-center">
+                {error}
+              </div>
             )}
 
             {/* Full Name */}
             <div className="flex flex-col gap-1.5">
               <label htmlFor="email" className="font-semibold text-sm text-midnight">Email</label>
               <div className="relative flex items-center">
-                <span className="absolute left-4 text-mauve pointer-events-none"><PersonFill/></span>
+                <span className="absolute left-4 text-mauve pointer-events-none"><PersonFill /></span>
                 <input
                   type="email"
                   id="email"
@@ -132,7 +138,7 @@ const Login = () => {
             <div className="flex flex-col gap-1.5">
               <label htmlFor="password" className="font-semibold text-sm text-midnight">Password</label>
               <div className="relative flex items-center">
-                <span className="absolute left-4 text-mauve pointer-events-none"><ShieldLockFill/></span>
+                <span className="absolute left-4 text-mauve pointer-events-none"><ShieldLockFill /></span>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   id="password"
@@ -148,7 +154,7 @@ const Login = () => {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 bg-transparent border-none cursor-pointer text-base opacity-60 hover:opacity-100 transition-opacity p-0"
                 >
-                  {showPassword ? <EyeSlashFill/> : <EyeFill/>}
+                  {showPassword ? <EyeSlashFill /> : <EyeFill />}
                 </button>
               </div>
             </div>
@@ -166,9 +172,9 @@ const Login = () => {
           {/* Sign in link */}
           <p className="text-center text-sm text-mauve mt-6">
             Don't have an account?{' '}
-            <button 
-            onClick ={() => navigate('/register')}
-          className="text-olive font-semibold no-underline hover:underline">Register here</button>
+            <button
+              onClick={() => navigate('/register')}
+              className="text-olive font-semibold no-underline hover:underline">Register here</button>
           </p>
 
           {/* Divider */}

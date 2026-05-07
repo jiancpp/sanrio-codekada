@@ -3,6 +3,7 @@ import { PersonFill, EnvelopeFill, ShieldLockFill, EyeFill, EyeSlashFill } from 
 import { useApi } from '../hooks/useApi';
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router';
+import logo from '../assets/logo-olive-light.png';
 
 /* ── Utility ── */
 const generateCode = () => {
@@ -194,19 +195,19 @@ const ChoosePath = ({ onChoose }) => (
         <span className="highlight-underline text-olive">family group</span>
       </h2>
       <p className="text-mauve text-sm leading-relaxed mt-3">
-        TalaCare works together — every account must belong to a family. Create a new one or join an existing group.
+        TalaCare works together, every account must belong to a family. Create a new one or join an existing group.
       </p>
     </div>
 
     <div className="flex flex-col gap-4">
       <button onClick={() => onChoose('create')}
-        className="group relative overflow-hidden bg-midnight text-egg p-6 rounded-[1.5rem] text-left transition-all hover:-translate-y-1 hover:shadow-xl">
+        className="group relative overflow-hidden bg-white border-2 border-olive-light text-midnight p-6 rounded-[1.5rem] text-left transition-all hover:-translate-y-1 hover:shadow-xl hover:border-olive">
         <div className="absolute inset-0 bg-olive opacity-0 group-hover:opacity-10 transition-opacity" />
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-2xl flex-shrink-0">🏠</div>
+          <div className="w-12 h-12 rounded-2xl bg-olive-light flex items-center justify-center text-2xl flex-shrink-0">🏠</div>
           <div>
             <p className="font-display font-black text-lg mb-1">Create a Family</p>
-            <p className="text-sage text-sm leading-relaxed">Start a new group and invite your family with a shareable code.</p>
+            <p className="text-mauve text-sm leading-relaxed">Start a new group and invite your family with a shareable code.</p>
           </div>
         </div>
         <div className="absolute right-5 top-1/2 -translate-y-1/2 text-sage opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all text-xl">→</div>
@@ -246,10 +247,10 @@ const CreateFamily = ({ onBack, onSuccess, user }) => {
       alert("Failed to create family. Please try again.");
       return;
     }
-    
+
     setCode(data.family.familyCode);
     setSubmitted(true);
-  
+
   };
 
   const handleCopy = () => {
@@ -259,7 +260,7 @@ Join my family using this code: ${code}
 
 🌐 https://talacare.onrender.com/`;
 
-  navigator.clipboard.writeText(message);
+    navigator.clipboard.writeText(message);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -338,12 +339,12 @@ const JoinFamily = ({ onBack, onSuccess, user }) => {
   const [status, setStatus] = useState('idle');
   const [familyName, setFamilyName] = useState('');
 
-  const handleLookup =  (e) => {
+  const handleLookup = (e) => {
     e.preventDefault();
     setStatus('loading');
     setTimeout(async () => {
       const family = await joinFamily({ familyCode: code, userId: user._id });
-      
+
       if (family) { setFamilyName(family.name); setStatus('found'); }
       else setStatus('error');
     }, 1000);
@@ -361,7 +362,7 @@ const JoinFamily = ({ onBack, onSuccess, user }) => {
         ← Back
       </button>
       <div className="mb-8">
-        <div className="w-14 h-14 rounded-[1.125rem] bg-olive-light flex items-center justify-center text-2xl mb-5">🤝</div>
+        <div className="w-14 h-14 rounded-[1.125rem] bg-midnight flex items-center justify-center text-2xl mb-5">🤝</div>
         <h2 className="font-display font-black text-3xl text-midnight mb-2">Enter family code</h2>
         <p className="text-mauve text-sm leading-relaxed">
           Ask a family member for their group code — it looks like <span className="font-bold text-midnight">PUSO-123</span>.
@@ -375,7 +376,7 @@ const JoinFamily = ({ onBack, onSuccess, user }) => {
             className={`w-full px-5 py-3.5 border-2 rounded-[0.875rem] text-[0.9375rem] text-midnight bg-white placeholder-[#b0b0b0] font-bold tracking-widest uppercase transition-all focus:outline-none
               ${status === 'error' ? 'border-coral focus:border-coral focus:shadow-[0_0_0_3px_rgba(224,128,119,0.2)]'
                 : status === 'found' ? 'border-olive focus:border-olive focus:shadow-[0_0_0_3px_rgba(115,138,119,0.15)]'
-                : 'border-olive-light focus:border-olive focus:shadow-[0_0_0_3px_rgba(115,138,119,0.15)]'}`} />
+                  : 'border-olive-light focus:border-olive focus:shadow-[0_0_0_3px_rgba(115,138,119,0.15)]'}`} />
           {status === 'error' && (
             <p className="text-xs text-coral-dark font-semibold flex items-center gap-1.5"><span>⚠️</span> Code not found. Double-check and try again.</p>
           )}
@@ -425,6 +426,11 @@ const LeftPanel = ({ step }) => {
 
       <div className="relative z-10 max-w-[440px] w-full">
         <a href="/" className="inline-flex items-center gap-2 mb-14 no-underline">
+          <img
+            src={logo}
+            alt="TalaCare Logo"
+            className="h-8 w-auto object-contain transition-transform group-hover:scale-110"
+          />
           <span className="font-display font-black text-[1.75rem] text-egg tracking-tight">TalaCare</span>
           <span className="w-2 h-2 rounded-full bg-coral" />
         </a>
@@ -466,7 +472,7 @@ const LeftPanel = ({ step }) => {
                 Health is better when it's shared.
               </h3>
               <p className="text-sage text-sm leading-relaxed">
-                TalaCare isn't a solo app — it's built for families. Every feature is designed around the idea that we take better care of ourselves when someone we love is watching.
+                TalaCare isn't a solo app. It's built for families. Every feature is designed around the idea that we take better care of ourselves when someone we love is watching.
               </p>
             </div>
             <div className="bg-white/[0.06] border border-white/10 rounded-[2rem] p-6"
@@ -526,14 +532,14 @@ const RegisterAndSetup = () => {
   };
 
   const handleSuccess = async () => {
-    const loggedInUser = await login({ 
-      email: user.email, 
-      password: temp, 
+    const loggedInUser = await login({
+      email: user.email,
+      password: temp,
     });
 
     // If login is successful, redirect to dashboard
     if (loggedInUser) {
-      navigate('/dashboard'); 
+      navigate('/dashboard');
     }
   };
 
@@ -553,9 +559,9 @@ const RegisterAndSetup = () => {
           <ProgressBar currentStep={progressIndex} />
 
           {step === 'account' && <AccountStep onNext={handleAccountNext} />}
-          {step === 'choose'  && <ChoosePath onChoose={setStep} />}
-          {step === 'create'  && <CreateFamily onBack={() => setStep('choose')} onSuccess={handleSuccess} user={user} />}
-          {step === 'join'    && <JoinFamily   onBack={() => setStep('choose')} onSuccess={handleSuccess} user={user} />}
+          {step === 'choose' && <ChoosePath onChoose={setStep} />}
+          {step === 'create' && <CreateFamily onBack={() => setStep('choose')} onSuccess={handleSuccess} user={user} />}
+          {step === 'join' && <JoinFamily onBack={() => setStep('choose')} onSuccess={handleSuccess} user={user} />}
         </div>
       </div>
     </div>

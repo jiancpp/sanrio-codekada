@@ -149,11 +149,11 @@ export const useApi = () => {
         setError(null);
 
         try {
-            const queryString = Object.keys(params).length 
-                ? '?' + new URLSearchParams(params).toString() 
+            const queryString = Object.keys(params).length
+                ? '?' + new URLSearchParams(params).toString()
                 : '';
             const response = await fetch(`${BASE_URL}/daily-log/family/${familyCode}${queryString}`, {
-                method: 'GET', 
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -180,7 +180,7 @@ export const useApi = () => {
 
         try {
             const response = await fetch(`${BASE_URL}/daily-log/user/${userId}`, {
-                method: 'GET', 
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -207,7 +207,7 @@ export const useApi = () => {
 
         try {
             const response = await fetch(`${BASE_URL}/daily-log/streak/${familyCode}`, {
-                method: 'GET', 
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -234,7 +234,7 @@ export const useApi = () => {
 
         try {
             const response = await fetch(`${BASE_URL}/daily-log/user/${userId}/date/${date}`, {
-                method: 'GET', 
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -257,8 +257,46 @@ export const useApi = () => {
 
 
     /* ══════════════════════════════════════════════
-        <REPLACE HEADER>
+        EDIT MEMBER INFO
         ══════════════════════════════════════════════ */
+    const updateMember = async (userId, updatedData) => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const response = await fetch(`${BASE_URL}/users/profile/edit-info/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedData)   // to remove or to not remove
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to update member');
+            }
+
+            return data;
+        } catch (err) {
+            setError(err.message);
+            return null;
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+
+    /* ══════════════════════════════════════════════
+        NOTIFICATIONS
+        ══════════════════════════════════════════════ */
+
+
+    /* ══════════════════════════════════════════════
+        MEDICINES
+        ══════════════════════════════════════════════ */
+
 
     return {
         // Add new API calls here
@@ -271,6 +309,7 @@ export const useApi = () => {
         getFamilyStreak,
         getUserLogs,
         getDailyLog,
+        updateMember,
         isLoading,
         error
     };
