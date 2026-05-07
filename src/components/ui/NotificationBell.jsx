@@ -1,14 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import socket from "../../hooks/socket"
+import { useApi } from "../../hooks/useApi"
 
 export const NotificationBell = () => {
   const [open, setOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+
+  const { getNotifications } = useApi();
 
   // temporary mock notifications
-  const notifications = [
+  const mock_notifications = [
     { id: 1, from: "Mama", text: "Medication reminder: Take Vitamin C", time: "10 min ago" },
     { id: 2, from: "Papa", text: "Family update: New lab result uploaded", time: "2 hrs ago" },
     { id: 3, from: "Lola", text: "Check-up due this week", time: "1 day ago" }
   ];
+
+  // getNotifications   const notifications = await getNotifications(familyCode) get from session token  
+  useEffect(() => {
+    const storedUserString = localStorage.getItem('user') || sessionStorage.getItem('user');
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    
+    if (!storedUserString) {
+      navigate('/login');
+    }
+    const parsedUser = JSON.parse(storedUserString);
+
+    const fetchData = async () => {
+      const data = await getNotifications(parsedUser.familyCode);
+
+      if (data) {
+        setNotifications(data);
+      }
+    };
+
+    fetchData();
+  }, [getNotifications]);
+
+
+  // Socket listener (real-time updates)
+  useEffect(() => {
+    const handler = (newNotification) => {
+      setNotifications((prev) => [newNotification, ...prev]);
+    };
+
+    socket.on("notification", handler);
+
+    return () => {
+      socket.off("notification", handler);
+    };
+  }, []);
 
   return (
     <div className="relative">

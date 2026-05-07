@@ -48,12 +48,17 @@ io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
   socket.on('join', (userId) => {
-    socket.join(userId);      // Private room
+    if (!socket.rooms.has(userId)) {
+      socket.join(userId);
+      console.log(`Joined user room: ${userId}`);
+    }
   });
 
-  socket.on('join-family', (familyCode) => {
-    socket.join(familyCode);      // Family room
-    console.log(`Joined family room: ${familyCode}`);
+  socket.on("join-family", (familyCode) => {
+    if (!socket.rooms.has(familyCode)) {
+      socket.join(familyCode);
+      console.log(`Joined family room: ${familyCode}`);
+    }
   });
 
   socket.on('disconnect', () => {

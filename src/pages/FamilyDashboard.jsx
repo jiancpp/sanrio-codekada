@@ -57,6 +57,13 @@ Join my family using this code: ${family?.familyCode}
     }
   }, [family]);
 
+  // Get notifications
+  useEffect(() => {
+    if (user?._id) {
+      socket.emit("join", user._id);
+    }
+  }, [user]);
+
   useEffect (() => {
     const storedUserString = localStorage.getItem('user') || sessionStorage.getItem('user');
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
