@@ -144,7 +144,13 @@ export const DailyLogPanel = ({ member }) => {
           {member.maintenanceMeds?.map((med, i) => (
             <div key={i} className="group relative flex flex-col p-3 rounded-xl border border-olive-light bg-egg/20">
               <label className="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" className="size-4 accent-olive rounded border-olive-light" />
+                <input type="checkbox" className="size-4 accent-olive rounded border-olive-light" 
+                onChange={(e) => {
+                  setCheckedMeds({
+                    ...checkedMeds,
+                    [med.name]: e.target.checked
+                  });
+                }}/>
                 <div className="flex flex-col">
                   <span className="text-xs font-bold text-midnight">{med.name}</span>
                   <span className="text-[10px] text-olive font-medium italic">
