@@ -13,6 +13,7 @@ import { BASE_URL } from '../hooks/constants';
 import { getAge } from '../hooks/utils';
 
 import socket from '../hooks/socket';
+import { useApi } from '../hooks/useApi';
 
 socket.on("connect", () => {
   console.log("Socket connected:", socket.id);
@@ -42,6 +43,7 @@ Join my family using this code: ${family?.familyCode}
   };
 
   // =========== Backend connection ================== //
+  const { getDailyLog, error } = useApi();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [family, setFamily] = useState(null);
@@ -77,11 +79,20 @@ Join my family using this code: ${family?.familyCode}
           const data = await response.json();
 
           if (response.ok) {
-            const updatedMembers = data.members.map(member => ({
-              ...member,
-              age: getAge(new Date(member.birthdate)) || 'N/A',
-              initial: member.name.slice(0, 2).toUpperCase()
-            }));
+
+            const updatedMembers = await Promise.all(
+              data.members.map(async (member) => {
+            
+                const dailyLog = await getDailyLog(member._id, new Date());
+                return {
+                  ...member,
+                  age: getAge(new Date(member.birthdate)) || 'N/A',
+                  initial: member.name.slice(0, 2).toUpperCase(),
+                  bp: dailyLog?.vitals.bloodPressure || null,
+                  hr: dailyLog?.vitals.heartRate || null,
+                };
+              })
+            );
 
             setFamily(data);
             setMembers(updatedMembers);

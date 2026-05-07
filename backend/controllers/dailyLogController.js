@@ -95,11 +95,14 @@ exports.getUserLogs = async (req, res) => {
 // Get User's Log for a specific day
 exports.getDailyLog = async (req, res) => {
     try {
-        const {userId, date } = req.params;
+        const { userId, date } = req.params;
+
+        const logDate = new Date(date);
+        const logDay = logDate.toISOString().split('T')[0];
 
         const log = await DailyLog.findOne({
             userId: userId,
-            date: date
+            date: logDay
         });
 
         if (!log) {
