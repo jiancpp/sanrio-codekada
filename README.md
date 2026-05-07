@@ -40,3 +40,36 @@ By centralizing medication tracking, vital sign logs, and medical records into a
 Inside the root directory of the repository:
 ```bash
 npm install
+```
+### 2. Environment Variables
+Create a .env file in the server directory and add your configurations (MongoDB URI, Cloudinary API Keys, etc.).
+
+### 3. Run the App Locally
+Start the backend server:
+
+```bash
+cd backend
+node server.js
+```
+
+On a different terminal, start the frontend development server:
+
+```bash
+npm run dev
+```
+
+The application will run at:
+
+http://localhost:5173
+
+## 📖 Why TalaCare?
+In the Philippines, caring for family has never depended on distance. However, busy schedules and migration (OFWs) often lead to "reactive" healthcare—only paying attention when someone gets sick.
+
+TalaCare moves the needle toward proactive care. Unlike generic habit trackers that rely on individual willpower, TalaCare relies on the strongest motivator we have: Family Love. It’s not just an app reminding you to take your pill; it’s your daughter sending you a nudge from 3,000 miles away.
+
+## 🛡️ Development Note
+This project was developed by Team Sanrio (CS Students from DLSU).
+
+React + Vite was chosen for a fast, optimized development experience.
+
+ESLint is configured for production-grade code quality.
